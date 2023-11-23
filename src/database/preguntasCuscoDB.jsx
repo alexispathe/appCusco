@@ -1,21 +1,121 @@
-const caracteristicasSociodemograficasDB=[
-    {
-        title: '¿Cuál es su sexo?',
-        options: [
-            {
-                option: 'Hombre',
-                optionID: 1
-            },
-            {
-                option: 'Mujer',
-                optionID: 2
-            }
-        ],
-        sociodemograficaID: 'cual-es-su-sexo-123'
-    },
-    {
-        title: '¿Cuál es su estado civil?',
-        options: ['Soltero(a)','Casado(a)','Viudo(a)', 'Divorciado(a)','Unión libre'],
-    },
-    
-]
+export const caracteristicasSociodemograficasDB = [
+  {
+    title: '¿Cuál es su sexo?',
+    options: [
+      {
+        option: 'Hombre',
+        optionID: 1,
+      },
+      {
+        option: 'Mujer',
+        optionID: 2,
+      },
+    ],
+    sociodemograficaID: 'cual-es-su-sexo-123',
+  },
+  {
+    title: '¿Cuál es su estado civil?',
+    options: [
+      'Soltero(a)',
+      'Casado(a)',
+      'Viudo(a)',
+      'Divorciado(a)',
+      'Unión libre',
+    ],
+  },
+  {
+    title: '¿De qué material es la mayor parte del techo de esta vivienda?',
+    options: [
+      'Material de desecho',
+      'Lámina de cartón',
+      'Lámina metálica',
+      'Lámina de asbesto',
+      'Palma o paja',
+      'Madera o tejamanil',
+      'Terrado con viguería',
+      'Teja',
+      'Losa de concreto o viguetas con bovedilla',
+    ],
+  },
+  {
+    title: '¿De qué material es la mayor parte del techo de esta vivienda?',
+    options: ['Material de desecho',
+        'Lámina de cartón',
+        'Lámina metálica',
+        'Lámina de asbesto',
+        'Palma o paja',
+        'Madera o tejamanil',
+        'Terrado con viguería',
+        'Teja',
+        'Losa de concreto o viguetas con bovedilla'],
+  },
+  {
+    title: '¿De qué material es la mayor parte de las paredes o muros de esta vivienda?',
+    options: ['Material de desecho',
+        'Lámina de cartón',
+        'Lámina de asbesto o metálica',
+        'Carrizo, bambú o palma',
+        'Embarro, bajareque o paja',
+        'Madera',
+        'Adobe',
+        'Tabique, ladrillo, block, piedra, cantera, cemento o concreto',
+        'No especificado'],
+  },
+  {
+    title: '¿De qué material es la mayor parte del piso de esta vivienda?',
+    options: ['Tierra',
+        'Cemento o Firme',
+        'Madera', 'mosaico u otro recubrimiento','No especificado'],
+  },
+  {
+    title: '¿Cuál es el combustible que más usan para cocinar?',
+    options: ['Leña',
+       'Carbón',
+        'Gas de cilindro o estacionario',
+        'Gas natural o de tubería',
+        'Electricidad',
+        '¿Otro combustible?',
+       '¿No cocinan?'],
+  },
+  {
+    title: '¿Hay luz eléctrica en esta vivienda?',
+    options: ['Sí','No'],
+  },
+  {
+    title: '¿Esta vivienda tiene agua entubada?',
+    options: ['Sí','No'],
+  },
+  {
+    title: '¿Esta vivienda tiene drenaje o desagüe conectado a:',
+    options: ['la red pública?',
+        '¿una fosa séptica o tanque séptico (biodigestor)?',
+        '¿una tubería que va a dar a una barranca o grieta?',
+        '¿una tubería que va a dar a un río, lago o mar?',
+        '¿No tiene drenaje?',
+        'No especificado'],
+  },
+  {
+    title: '¿La basura de esta vivienda:',
+    options: ['¿la recoge un camión o carrito de basura?',
+        '¿la tiran en el basurero público?',
+        '¿la tiran en un contenedor o depósito?',
+        '¿la queman?',
+        '¿la entierran?',
+       '¿la tiran en un terreno baldío o calle?',
+        '¿la tiran a la barranca o grieta?',
+        '¿la tiran al rio, lago o mar?',
+        'No especificado'],
+  },
+  {
+    title: '¿Cuál es el último año o grado que aprobó usted en la escuela?',
+    options: ['Ninguno',
+        'Preescolar',
+        'Primaria',
+        'Secundaria',
+        'Preparatoria o bachillerato',
+        'Carrera Tecnica o Comercial',
+        'Licenciatura o Ingenieria',
+        'Maestria',
+        'Doctorado'],
+  }
+];
