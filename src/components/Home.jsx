@@ -1,7 +1,6 @@
-import { DataUser } from "./DataUser";
-
+import { DataUserScreen } from "./DataUserScreen";
 export const Home=()=>{
     return(
-        <DataUser/>
+        <DataUserScreen/>
     )
 }

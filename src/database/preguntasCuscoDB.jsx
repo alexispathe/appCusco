@@ -358,7 +358,14 @@ export const preguntas = [
           'En los últimos seis meses ¿usted acudió a revisión médica preventiva?',
         options: ['Sí', 'No'],
         questionID: 'revision-preventiva-987',
-      },
-    ],
+      }]
   },
+  {title: 'Programacion',
+    questions: [
+      {
+        title: '¿Cuál es su nivel?',
+        options: ['Bajo', 'Alto'],
+        questionID: 'cual-es-nivel-123',
+      }]}
+  
 ];
