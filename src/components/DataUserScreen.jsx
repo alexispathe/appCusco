@@ -1,47 +1,53 @@
-import React, {useState, useEffect} from 'react';
-import {View, Text, Button, StyleSheet, ScrollView} from 'react-native';
+
+import React, { useState, useEffect } from 'react';
+import { View, Text, Button, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
+import { QuestionnaireScreen } from './QuestionnaireScreen';
 import {RadioButton, TextInput as PaperTextInput} from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {QuestionnaireScreen} from './QuestionnaireScreen';
 export const DataUserScreen = () => {
   const [meterNumber, setMeterNumber] = useState('');
   const [questionnaireNumber, setquestionnaireNumber] = useState(1);
-
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
-  const [status, setStatus] = useState(false); //Si el usuario ya relleno el formulario enteonces mostara el otro componente
+  const [status, setStatus] = useState(false);
+  const [loadingQuestions, setLoadingQuestions] = useState(false); // Nuevo estado para el indicador de carga
+
   useEffect(() => {
     checkFormCompletion();
     loadUserData();
   }, [meterNumber]);
 
-  // Funcion que permite validar primero que el usuario llene el formulario
-  const checkFormCompletion = async () => {
-    if (meterNumber !== '') {
-      setIsButtonDisabled(false);
-    } else {
-      setIsButtonDisabled(true);
-    }
+  const checkFormCompletion = () => {
+    setIsButtonDisabled(meterNumber === '');
   };
 
-  // Funcion que busca los datos en el AsyncStorage para guardarlos en UserData
-  const loadUserData = async () => {
+  const loadUserData = async() => {
     try {
-      const data = await AsyncStorage.getItem('userResult');
-      if (data !== null) {
-        // data = JSON.parse(data);
-      console.log(JSON.parse(data))
-
-        setquestionnaireNumber(JSON.parse(data).length +1)
+      try {
+        const data = await AsyncStorage.getItem('userResult');
+        if (data !== null) {
+          // data = JSON.parse(data);
+        console.log(JSON.parse(data))
+  
+          setquestionnaireNumber(JSON.parse(data).length +1)
+        }
+      } catch (error) {
+        console.error('Error al cargar los datos:', error);
       }
+      // Código para cargar los datos del usuario
+      setLoadingQuestions(true); // Indicar que se está cargando la información de las preguntas
+      // Simulación de carga de datos (puedes ajustar esta parte según cómo obtengas las preguntas)
+      setTimeout(() => {
+        // Supongamos que aquí se obtienen las preguntas
+        setLoadingQuestions(false); // Cuando se obtienen las preguntas, se desactiva el indicador de carga
+      }, 2000); // Simular una carga de 2 segundos
     } catch (error) {
       console.error('Error al cargar los datos:', error);
     }
   };
-  // Funcion para guardar datos
+
   const handleFormSubmit = () => {
     setStatus(true);
   };
-
   return (
     <ScrollView>
       <View>
@@ -70,6 +76,7 @@ export const DataUserScreen = () => {
             meterNumber={meterNumber}
             questionnaireNumber={questionnaireNumber}
             setStatus={setStatus}
+            loadingStatus={loadingQuestions} 
           />
         )}
       </View>

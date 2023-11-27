@@ -1,6 +1,5 @@
 import React, {useState, useEffect, useRef} from 'react';
-import { PermissionsAndroid} from 'react-native';
-
+import {PermissionsAndroid} from 'react-native';
 import {
   View,
   Text,
@@ -18,6 +17,7 @@ export const QuestionnaireScreen = ({
   meterNumber,
   questionnaireNumber,
   setStatus,
+  loadingStatus,
 }) => {
   const [selectedOptions, setSelectedOptions] = useState({});
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
@@ -31,7 +31,7 @@ export const QuestionnaireScreen = ({
   useEffect(() => {
     const initialQuestions = questions.slice(startIndex, startIndex + pageSize);
     setVisibleQuestions(initialQuestions);
-  }, []);
+  }, [startIndex]);
 
   useEffect(() => {
     checkAllOptionsSelected();
@@ -87,8 +87,7 @@ export const QuestionnaireScreen = ({
       } else {
         await AsyncStorage.setItem('userResult', JSON.stringify([newUserData]));
         setUserResponses(newUserData);
-        setSelectedOptions({});
-        setStatus(false);
+        handleSaveDataXlSX(); // Llamar a la función para guardar los datos en excel
       }
     } catch (error) {
       console.error('Error al guardar los datos:', error);
@@ -101,206 +100,296 @@ export const QuestionnaireScreen = ({
         PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
         {
           title: 'Permiso de escritura en almacenamiento externo',
-          message: 'Se requiere acceso a la carpeta de descargas para guardar archivos.',
+          message:
+            'Se requiere acceso a la carpeta de descargas para guardar archivos.',
           buttonPositive: 'Aceptar',
-        }
+        },
       );
-  
+
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        console.log('Permiso de escritura en almacenamiento externo concedido.');
-        handleDownloadExcel(); // Llamar a la función de descarga después de obtener los permisos
+        console.log(
+          'Permiso de escritura en almacenamiento externo concedido.',
+        );
+        handleSaveDataStorage()
       } else {
         console.log('Permiso de escritura en almacenamiento externo denegado.');
       }
     } catch (error) {
-      console.error('Error al solicitar permiso de escritura en almacenamiento externo:', error);
+      console.error(
+        'Error al solicitar permiso de escritura en almacenamiento externo:',
+        error,
+      );
     }
   };
-// Funcion para guardar los datos en la carpeta de descargas
-const handleDownloadExcel = async () => {
-  const sourcePath = `${RNFS.DocumentDirectoryPath}/cusco_v2.xlsx`;
-  const destinationPath = `${RNFS.DownloadDirectoryPath}/cusco_v2_descarga.xlsx`;
+  // Funcion para guardar los datos en la carpeta de descargas
+  const handleDownloadExcel = async () => {
+    const sourcePath = `${RNFS.DocumentDirectoryPath}/cusco_v2.xlsx`;
+    const destinationPath = `${RNFS.DownloadDirectoryPath}/cusco_v2_descarga.xlsx`;
 
-  try {
-    const exists = await RNFS.exists(sourcePath);
-    if (!exists) {
-      console.log('El archivo Excel no existe en la ubicación especificada.');
-      return;
+    try {
+      const exists = await RNFS.exists(sourcePath);
+      if (!exists) {
+        console.log('El archivo Excel no existe en la ubicación especificada.');
+        return;
+      }
+
+      await RNFS.copyFile(sourcePath, destinationPath);
+      alert('Archivo  descargado correctamente');
+    } catch (error) {
+      console.error('Error al descargar el archivo Excel:', error);
     }
+  };
 
-    await RNFS.copyFile(sourcePath, destinationPath);
-    alert('Archivo  descargado correctamente');
+  const handleSaveDataXlSX = async () => {
+    const filePath = `${RNFS.DownloadDirectoryPath}/cusco_v6.xlsx`;
 
-  } catch (error) {
-    console.error('Error al descargar el archivo Excel:', error);
-  }
-};
+    try {
+      let workbook = null;
+      let existingData = null;
 
+      if (await RNFS.exists(filePath)) {
+        existingData = await RNFS.readFile(filePath, 'base64');
+        workbook = XLSX.read(existingData, {type: 'base64'});
+      } else {
+        workbook = XLSX.utils.book_new();
 
-  
+        const sheetName = 'Datos';
+        const columns = [
+          'ID',
+          'Edad',
+          'Sexo',
+          'Edo_Civil',
+          'Techo_Vivienda',
+          'Paredes_Muros_Vivienda',
+          'Pisos_Vivienda',
+          'Combustible_Para_Cocinar',
+          'Luz_Electrica',
+          'Agua_Entubada',
+          'Drenaje_Vivienda',
+          'Basura_Vivienda',
+          'Grado_Estudios',
+          'Edo_Salud',
+          'Problemas_Salud_Atencion',
+          'Seguro_Social',
+          'Atención_Medica',
+          'Revision_Preventiva',
+          'Solicitud_Atención_Salud',
+          'Necesidad_Atención',
+          'Cartilla_Actualizada',
+          'Vacuna_Tetanos',
+          'Vacuna_Influenza',
+          'Vacuna_COVID',
+          'Proteccion_Vehiculo',
+          'Actividad_Fisica',
+          'Ejemplos_Actividades_Físicas',
+          'Peso_Aprox',
+          'Medicion_Aprox',
+          'Peso_Consideracion',
+          'Limitacion_Actividades',
+          'Esfuerzo',
+          'Fatiga',
+          'Medico_Azucar',
+          'Medico_Diabetes',
+          'Medico_Tension_Arterial',
+          'Medico_Presion_Alta',
+          'Dolor_Aprox',
+          'Medico_Salud',
+          'Análisis_Colesterol',
+          'Colesterol_Alto',
+          'Análisis_Trigliceridos',
+          'Triglicéridos_Altos',
+          'Daño_Accidente',
+          'Anteojos_Leer',
+          'Prótesis_Auditiva',
+          'Dolor_Cuerpo',
+          'Semana_Nervioso',
+          'Concentrarse_Semana',
+          'Triste_Deprimido',
+          'Semana_Sueño',
+          'Tiempo_Promedio_Sueño',
+          'Disfrutar_Vida',
+          'Pensamiento_Suicidio',
+          'Daño_Salud_Agresiones',
+          'Consumo_Promedio_Cajetillas',
+          'Consumo_Tabaco',
+          'Promedio_Consumo_Cigarro',
+          'Consumo_Bebida_Alcoholica',
+          'Frecuencia_Consumo_Alcohol',
+          'Promedio_Consumo_Copas',
+          'Horas_Trabajo_Diario',
+          'Estado_Salud_Dificultad_Actividades',
+          'Vida_Social',
+          'Salir_Distraerse_Invitación',
+          'Recibir_Amor_Efecto',
+          'Hablar_Problemas',
+          'Personas_Preocupación',
+          'Consejos_Útiles',
+          'Ayuda_Enfermedad',
+        ];
+        const data = [columns]; // Primera fila con los nombres de las columnas
 
-
-const handleSaveDataXlSX = async () => {
-  const filePath = `${RNFS.DownloadDirectoryPath}/cusco_v6.xlsx`;
-
-  try {
-    let workbook = null;
-    let existingData = null;
-
-    if (await RNFS.exists(filePath)) {
-      existingData = await RNFS.readFile(filePath, 'base64');
-      workbook = XLSX.read(existingData, { type: 'base64' });
-    } else {
-      workbook = XLSX.utils.book_new();
+        // Convertir los nombres de columnas en una hoja de datos
+        const worksheet = XLSX.utils.aoa_to_sheet(data);
+        XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
+      }
 
       const sheetName = 'Datos';
-      const columns = [
-        'ID', 'Edad', 'Sexo', 'Edo_Civil', 'Techo_Vivienda', 'Paredes_Muros_Vivienda',
-        'Pisos_Vivienda', 'Combustible_Para_Cocinar', 'Luz_Electrica', 'Agua_Entubada',
-        'Drenaje_Vivienda', 'Basura_Vivienda', 'Grado_Estudios', 'Edo_Salud', 'Problemas_Salud_Atencion',
-        'Seguro_Social', 'Atención_Medica', 'Revision_Preventiva', 'Solicitud_Atención_Salud', 'Necesidad_Atención',
-        'Cartilla_Actualizada', 'Vacuna_Tetanos', 'Vacuna_Influenza', 'Vacuna_COVID', 'Proteccion_Vehiculo',
-        'Actividad_Fisica', 'Ejemplos_Actividades_Físicas', 'Peso_Aprox', 'Medicion_Aprox', 'Peso_Consideracion',
-        'Limitacion_Actividades', 'Esfuerzo', 'Fatiga', 'Medico_Azucar', 'Medico_Diabetes', 'Medico_Tension_Arterial',
-        'Medico_Presion_Alta', 'Dolor_Aprox', 'Medico_Salud', 'Análisis_Colesterol', 'Colesterol_Alto',
-        'Análisis_Trigliceridos', 'Triglicéridos_Altos', 'Daño_Accidente', 'Anteojos_Leer', 'Prótesis_Auditiva',
-        'Dolor_Cuerpo', 'Semana_Nervioso', 'Concentrarse_Semana', 'Triste_Deprimido', 'Semana_Sueño',
-        'Tiempo_Promedio_Sueño', 'Disfrutar_Vida', 'Pensamiento_Suicidio', 'Daño_Salud_Agresiones',
-        'Consumo_Promedio_Cajetillas', 'Consumo_Tabaco', 'Promedio_Consumo_Cigarro', 'Consumo_Bebida_Alcoholica',
-        'Frecuencia_Consumo_Alcohol', 'Promedio_Consumo_Copas', 'Horas_Trabajo_Diario', 'Estado_Salud_Dificultad_Actividades',
-        'Vida_Social', 'Salir_Distraerse_Invitación', 'Recibir_Amor_Efecto', 'Hablar_Problemas', 'Personas_Preocupación',
-        'Consejos_Útiles', 'Ayuda_Enfermedad'
-      ];
-      const data = [columns]; // Primera fila con los nombres de las columnas
+      let worksheet = workbook.Sheets[sheetName];
 
-      // Convertir los nombres de columnas en una hoja de datos
-      const worksheet = XLSX.utils.aoa_to_sheet(data);
-      XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
-    }
+      const lastRow = XLSX.utils.sheet_add_json(
+        worksheet,
+        [{questionnaireNumber}],
+        {header: ['ID']},
+      );
+      const userData = [questionnaireNumber]; // Incluir questionnaireNumber como primera columna
 
-    const sheetName = 'Datos';
-    let worksheet = workbook.Sheets[sheetName];
+      questions.forEach(section => {
+        section.questions.forEach(question => {
+          const {questionID, questionType} = question;
+          if (selectedOptions[questionID] !== undefined) {
+            let value = selectedOptions[questionID];
 
-    const lastRow = XLSX.utils.sheet_add_json(worksheet, [{ questionnaireNumber }], { header: ['ID'] });
-    const userData = [questionnaireNumber]; // Incluir questionnaireNumber como primera columna
+            // Verificar el tipo de pregunta y aplicar lógica correspondiente
+            if (questionType === 'numberInput') {
+              // Mantener el mismo valor para number input
+              value = parseInt(value);
+            } else if (questionType === 'radioButton') {
+              // Incrementar en 1 para radio button
+              value = parseInt(value) + 1;
+            }
 
-    questions.forEach(section => {
-      section.questions.forEach(question => {
-        const { questionID, questionType } = question;
-        if (selectedOptions[questionID] !== undefined) {
-          let value = selectedOptions[questionID];
-  
-          // Verificar el tipo de pregunta y aplicar lógica correspondiente
-          if (questionType === 'numberInput') {
-            // Mantener el mismo valor para number input
-            value = parseInt(value);
-          } else if (questionType === 'radioButton') {
-            // Incrementar en 1 para radio button
-            value = parseInt(value) + 1;
+            userData.push(value);
           }
-  
-          userData.push(value);
-        }
+        });
       });
-    });
-   // Encontrar la fila vacía para guardar las respuestas del usuario
-   let row = 2;
+      // Encontrar la fila vacía para guardar las respuestas del usuario
+      let row = 2;
 
-   while (worksheet[XLSX.utils.encode_cell({ r: row, c: 0 })]) {
-     row++;
-   }
+      while (worksheet[XLSX.utils.encode_cell({r: row, c: 0})]) {
+        row++;
+      }
 
-   // Guardar las respuestas en la fila encontrada
-   userData.forEach((value, index) => {
-     const cellRef = XLSX.utils.encode_cell({ r: row, c: index });
-     worksheet[cellRef] = { t: 'n', v: value };
-   });
+      // Guardar las respuestas en la fila encontrada
+      userData.forEach((value, index) => {
+        const cellRef = XLSX.utils.encode_cell({r: row, c: index});
+        worksheet[cellRef] = {t: 'n', v: value};
+      });
 
-   // Escribir el libro de trabajo actualizado en el archivo Excel
-   const newExcelData = XLSX.write(workbook, { bookType: 'xlsx', type: 'base64' });
-   await RNFS.writeFile(filePath, newExcelData, 'base64');
-   
-    
-    console.log('Datos guardados en Excel correctamente.');
-  } catch (error) {
-    console.error('Error al guardar datos en Excel:', error);
-  }
-};
-
-
-
-
-  const handleScroll = ({nativeEvent}) => {
-    const {layoutMeasurement, contentOffset, contentSize} = nativeEvent;
-    const paddingToBottom = 20;
-    if (
-      layoutMeasurement.height + contentOffset.y >=
-      contentSize.height - paddingToBottom
-    ) {
-      setLoading(true);
-      setStartIndex(prevStartIndex => prevStartIndex + pageSize);
-      setLoading(false);
+      // Escribir el libro de trabajo actualizado en el archivo Excel
+      const newExcelData = XLSX.write(workbook, {
+        bookType: 'xlsx',
+        type: 'base64',
+      });
+      await RNFS.writeFile(filePath, newExcelData, 'base64');
+      // Limpiamos el formulario
+      alert('Datos guardados correctamente.');
+      setSelectedOptions({});
+      setStatus(false);
+    } catch (error) {
+      console.error('Error al guardar datos en Excel:', error);
     }
   };
+
+  const handleScroll = ({ nativeEvent }) => {
+    const { layoutMeasurement, contentOffset, contentSize } = nativeEvent;
+    const paddingToBottom = 20;
+  
+    if (
+      layoutMeasurement.height + contentOffset.y >=
+      contentSize.height - paddingToBottom &&
+      !loading // Agregar una verificación para evitar la carga mientras ya está cargando
+    ) {
+      setLoading(true);
+      alert("Scrroll")
+      // Calcula la nueva página de preguntas a cargar
+      const newStartIndex = startIndex + pageSize;
+      const additionalQuestions = questions.slice(newStartIndex, newStartIndex + pageSize);
+  
+      // Simula un retraso para mostrar la lógica de carga
+      setTimeout(() => {
+        setVisibleQuestions(prevQuestions => prevQuestions.concat(additionalQuestions));
+        setStartIndex(newStartIndex);
+        setLoading(false);
+      }, 1000); // Simula una carga, podrías ajustar este tiempo según tus necesidades
+    }
+  };
+  
   return (
     <ScrollView
       ref={scrollViewRef}
       contentContainerStyle={styles.scrollViewContainer}
       onScroll={({nativeEvent}) => handleScroll({nativeEvent})}
       scrollEventThrottle={400}>
-      {visibleQuestions.map((section, sectionIndex) => (
-        <View key={sectionIndex} style={styles.sectionContainer}>
-          <Text style={styles.sectionTitle}>{section.title}</Text>
-          {section.questions.map((question, questionIndex) => (
-            <View key={question.questionID} style={styles.questionContainer}>
-              <Text style={styles.questionTitle}>{question.title}</Text>
-              {question.questionType === 'numberInput' ? (
-                <PaperTextInput
-                  label={question.title}
-                  value={selectedOptions[question.questionID]}
-                  onChangeText={text =>
-                    handleOptionSelect(question.questionID, text)
-                  }
-                  keyboardType="numeric"
-                  style={styles.input}
-                />
-              ) : (
-                <ScrollView contentContainerStyle={styles.optionsContainer}>
-                  {question.options.map((option, optionIndex) => (
-                    <View key={optionIndex} style={styles.radioButtonContainer}>
-                      <RadioButton.Android
-                        value={optionIndex}
-                        status={
-                          selectedOptions[question.questionID] === optionIndex
-                            ? 'checked'
-                            : 'unchecked'
-                        }
-                        onPress={() =>
-                          handleOptionSelect(question.questionID, optionIndex)
-                        }
-                        color="#6200EE"
-                      />
-                      <Text style={styles.optionText}>{option}</Text>
-                    </View>
-                  ))}
-                </ScrollView>
-              )}
+      {loadingStatus ? (
+        <View style={styles.loadingContainer}>
+          <Text>Cargando preguntas....</Text>
+          <ActivityIndicator size="large" color="#0000ff" />
+        </View>
+      ) : (
+        <>
+          {visibleQuestions.map((section, sectionIndex) => (
+            <View key={sectionIndex} style={styles.sectionContainer}>
+              <Text style={styles.sectionTitle}>{section.title}</Text>
+              {section.questions.map((question, questionIndex) => (
+                <View
+                  key={question.questionID}
+                  style={styles.questionContainer}>
+                  <Text style={styles.questionTitle}>{question.title}</Text>
+                  {question.questionType === 'numberInput' ? (
+                    <PaperTextInput
+                      label={question.title}
+                      value={selectedOptions[question.questionID]}
+                      onChangeText={text =>
+                        handleOptionSelect(question.questionID, text)
+                      }
+                      keyboardType="numeric"
+                      style={styles.input}
+                    />
+                  ) : (
+                    <ScrollView contentContainerStyle={styles.optionsContainer}>
+                      {question.options.map((option, optionIndex) => (
+                        <View
+                          key={optionIndex}
+                          style={styles.radioButtonContainer}>
+                          <RadioButton.Android
+                            value={optionIndex}
+                            status={
+                              selectedOptions[question.questionID] ===
+                              optionIndex
+                                ? 'checked'
+                                : 'unchecked'
+                            }
+                            onPress={() =>
+                              handleOptionSelect(
+                                question.questionID,
+                                optionIndex,
+                              )
+                            }
+                            color="#6200EE"
+                          />
+                          <Text style={styles.optionText}>{option}</Text>
+                        </View>
+                      ))}
+                    </ScrollView>
+                  )}
+                </View>
+              ))}
             </View>
           ))}
-        </View>
-      ))}
+        </>
+      )}
+
       {loading && (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#0000ff" />
         </View>
       )}
       <Button
-        title="Guardar"
-        onPress={handleSaveDataXlSX}
+        title="Guardar cuestionario"
+        onPress={requestExternalStoragePermission}
         disabled={isButtonDisabled}
       />
-      <Button title="Descargar Excel" onPress={requestExternalStoragePermission} />
-
+      {/* <Button title="Descargar Excel" onPress={requestExternalStoragePermission} /> */}
     </ScrollView>
   );
 };
