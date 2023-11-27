@@ -52,7 +52,10 @@ export const QuestionnaireScreen = ({
     );
     setIsButtonDisabled(!allQuestionsAnswered);
   };
-
+  const handleSave=async()=>{
+    await handleSaveDataStorage()
+    await handleDownloadExcel();
+  }
   const handleSaveDataStorage = async () => {
     const userData = {};
     questions.forEach(section => {
@@ -87,7 +90,6 @@ export const QuestionnaireScreen = ({
       } else {
         await AsyncStorage.setItem('userResult', JSON.stringify([newUserData]));
         setUserResponses(newUserData);
-        handleSaveDataXlSX(); // Llamar a la función para guardar los datos en excel
       }
     } catch (error) {
       console.error('Error al guardar los datos:', error);
@@ -110,7 +112,8 @@ export const QuestionnaireScreen = ({
         console.log(
           'Permiso de escritura en almacenamiento externo concedido.',
         );
-        handleSaveDataStorage()
+        handleSave()
+        
       } else {
         console.log('Permiso de escritura en almacenamiento externo denegado.');
       }
