@@ -26,7 +26,7 @@ export const DataUserScreen = () => {
         const data = await AsyncStorage.getItem('userResult');
         if (data !== null) {
           // data = JSON.parse(data);
-        console.log(JSON.parse(data))
+        // console.log(JSON.parse(data))
   
           setquestionnaireNumber(JSON.parse(data).length +1)
         }

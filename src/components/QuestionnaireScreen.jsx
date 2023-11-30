@@ -9,7 +9,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import {RadioButton, TextInput as PaperTextInput} from 'react-native-paper';
-import {prueba as questions} from '../database/preguntasCuscoDB';
+import {prueba as questions, columns} from '../database/preguntasCuscoDB';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import XLSX from 'xlsx';
 import RNFS from 'react-native-fs';
@@ -85,8 +85,9 @@ export const QuestionnaireScreen = ({
         const updatedData = [...parsedExistingData, newUserData];
         await AsyncStorage.setItem('userResult', JSON.stringify(updatedData));
         setUserResponses(newUserData);
-        setSelectedOptions({});
-        setStatus(false);
+        await handleSaveDataXlSX()
+        await setSelectedOptions({});
+        await setStatus(false);
       } else {
         await AsyncStorage.setItem('userResult', JSON.stringify([newUserData]));
         setUserResponses(newUserData);
@@ -112,7 +113,7 @@ export const QuestionnaireScreen = ({
         console.log(
           'Permiso de escritura en almacenamiento externo concedido.',
         );
-        handleSave()
+        handleSaveDataStorage()
         
       } else {
         console.log('Permiso de escritura en almacenamiento externo denegado.');
@@ -144,147 +145,132 @@ export const QuestionnaireScreen = ({
   };
 
   const handleSaveDataXlSX = async () => {
-    const filePath = `${RNFS.DownloadDirectoryPath}/cusco_v6.xlsx`;
-
     try {
+      const filePath = `${RNFS.DownloadDirectoryPath}/cusco.xlsx`;
       let workbook = null;
       let existingData = null;
-
+  
       if (await RNFS.exists(filePath)) {
         existingData = await RNFS.readFile(filePath, 'base64');
-        workbook = XLSX.read(existingData, {type: 'base64'});
+        workbook = XLSX.read(existingData, { type: 'base64' });
       } else {
         workbook = XLSX.utils.book_new();
-
-        const sheetName = 'Datos';
-        const columns = [
-          'ID',
-          'Edad',
-          'Sexo',
-          'Edo_Civil',
-          'Techo_Vivienda',
-          'Paredes_Muros_Vivienda',
-          'Pisos_Vivienda',
-          'Combustible_Para_Cocinar',
-          'Luz_Electrica',
-          'Agua_Entubada',
-          'Drenaje_Vivienda',
-          'Basura_Vivienda',
-          'Grado_Estudios',
-          'Edo_Salud',
-          'Problemas_Salud_Atencion',
-          'Seguro_Social',
-          'Atención_Medica',
-          'Revision_Preventiva',
-          'Solicitud_Atención_Salud',
-          'Necesidad_Atención',
-          'Cartilla_Actualizada',
-          'Vacuna_Tetanos',
-          'Vacuna_Influenza',
-          'Vacuna_COVID',
-          'Proteccion_Vehiculo',
-          'Actividad_Fisica',
-          'Ejemplos_Actividades_Físicas',
-          'Peso_Aprox',
-          'Medicion_Aprox',
-          'Peso_Consideracion',
-          'Limitacion_Actividades',
-          'Esfuerzo',
-          'Fatiga',
-          'Medico_Azucar',
-          'Medico_Diabetes',
-          'Medico_Tension_Arterial',
-          'Medico_Presion_Alta',
-          'Dolor_Aprox',
-          'Medico_Salud',
-          'Análisis_Colesterol',
-          'Colesterol_Alto',
-          'Análisis_Trigliceridos',
-          'Triglicéridos_Altos',
-          'Daño_Accidente',
-          'Anteojos_Leer',
-          'Prótesis_Auditiva',
-          'Dolor_Cuerpo',
-          'Semana_Nervioso',
-          'Concentrarse_Semana',
-          'Triste_Deprimido',
-          'Semana_Sueño',
-          'Tiempo_Promedio_Sueño',
-          'Disfrutar_Vida',
-          'Pensamiento_Suicidio',
-          'Daño_Salud_Agresiones',
-          'Consumo_Promedio_Cajetillas',
-          'Consumo_Tabaco',
-          'Promedio_Consumo_Cigarro',
-          'Consumo_Bebida_Alcoholica',
-          'Frecuencia_Consumo_Alcohol',
-          'Promedio_Consumo_Copas',
-          'Horas_Trabajo_Diario',
-          'Estado_Salud_Dificultad_Actividades',
-          'Vida_Social',
-          'Salir_Distraerse_Invitación',
-          'Recibir_Amor_Efecto',
-          'Hablar_Problemas',
-          'Personas_Preocupación',
-          'Consejos_Útiles',
-          'Ayuda_Enfermedad',
-        ];
-        const data = [columns]; // Primera fila con los nombres de las columnas
-
-        // Convertir los nombres de columnas en una hoja de datos
-        const worksheet = XLSX.utils.aoa_to_sheet(data);
+      }
+  
+      let sheetName = 'Datos';
+      let worksheet = workbook.Sheets[sheetName];
+  
+      if (!worksheet) {
+        worksheet = XLSX.utils.aoa_to_sheet([columns]);
         XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
       }
-
-      const sheetName = 'Datos';
-      let worksheet = workbook.Sheets[sheetName];
-
-      const lastRow = XLSX.utils.sheet_add_json(
-        worksheet,
-        [{questionnaireNumber}],
-        {header: ['ID']},
-      );
-      const userData = [questionnaireNumber]; // Incluir questionnaireNumber como primera columna
-
+      const userData = [questionnaireNumber];
+  
       questions.forEach(section => {
         section.questions.forEach(question => {
-          const {questionID, questionType} = question;
+          const { questionID, questionType } = question;
           if (selectedOptions[questionID] !== undefined) {
             let value = selectedOptions[questionID];
-
-            // Verificar el tipo de pregunta y aplicar lógica correspondiente
+  
             if (questionType === 'numberInput') {
-              // Mantener el mismo valor para number input
               value = parseInt(value);
             } else if (questionType === 'radioButton') {
-              // Incrementar en 1 para radio button
               value = parseInt(value) + 1;
             }
-
+  
             userData.push(value);
           }
         });
       });
-      // Encontrar la fila vacía para guardar las respuestas del usuario
-      let row = 2;
+      console.log(userData)
 
-      while (worksheet[XLSX.utils.encode_cell({r: row, c: 0})]) {
-        row++;
-      }
-
-      // Guardar las respuestas en la fila encontrada
-      userData.forEach((value, index) => {
-        const cellRef = XLSX.utils.encode_cell({r: row, c: index});
-        worksheet[cellRef] = {t: 'n', v: value};
+      const lastRow = XLSX.utils.sheet_add_json(worksheet, [userData], {
+        header: ['ID'],
+        skipHeader: true,
+        origin: -1,
       });
-
-      // Escribir el libro de trabajo actualizado en el archivo Excel
+  
+      
+      XLSX.utils.sheet_add_json(worksheet, [userData], {
+        skipHeader: true,
+        origin: lastRow + 1,
+      });
+  
       const newExcelData = XLSX.write(workbook, {
         bookType: 'xlsx',
         type: 'base64',
       });
+  
       await RNFS.writeFile(filePath, newExcelData, 'base64');
-      // Limpiamos el formulario
+  
+      handleSaveDataXlSXString();
+      setStatus(false);
+    } catch (error) {
+      console.error('Error al guardar datos en Excel:', error);
+    }
+  };
+  const handleSaveDataXlSXString = async () => {
+    try {
+      const filePath = `${RNFS.DownloadDirectoryPath}/cusco_v2.xlsx`;
+      let workbook = null;
+      let existingData = null;
+  
+      if (await RNFS.exists(filePath)) {
+        existingData = await RNFS.readFile(filePath, 'base64');
+        workbook = XLSX.read(existingData, { type: 'base64' });
+      } else {
+        workbook = XLSX.utils.book_new();
+      }
+  
+      let sheetName = 'Datos';
+      let worksheet = workbook.Sheets[sheetName];
+  
+      if (!worksheet) {
+        worksheet = XLSX.utils.aoa_to_sheet([columns]);
+        XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
+      }
+      const userData = [questionnaireNumber];
+  
+      questions.forEach(section => {
+        section.questions.forEach(question => {
+          const { questionID, questionType,options } = question;
+          if (selectedOptions[questionID] !== undefined) {
+            let value;
+            let value2 = question.options[selectedOptions[questionID]];
+
+            if (questionType === 'numberInput') {
+
+              value = selectedOptions[questionID];
+              value = parseInt(value);
+            } else if (questionType === 'radioButton') {
+              value = value2;
+            }
+  
+            userData.push(value);
+          }
+        });
+      });
+      console.log(userData)
+
+      const lastRow = XLSX.utils.sheet_add_json(worksheet, [userData], {
+        header: ['ID'],
+        skipHeader: true,
+        origin: -1,
+      });
+  
+      
+      XLSX.utils.sheet_add_json(worksheet, [userData], {
+        skipHeader: true,
+        origin: lastRow + 1,
+      });
+  
+      const newExcelData = XLSX.write(workbook, {
+        bookType: 'xlsx',
+        type: 'base64',
+      });
+  
+      await RNFS.writeFile(filePath, newExcelData, 'base64');
+  
       alert('Datos guardados correctamente.');
       setSelectedOptions({});
       setStatus(false);
@@ -292,6 +278,7 @@ export const QuestionnaireScreen = ({
       console.error('Error al guardar datos en Excel:', error);
     }
   };
+  
 
   const handleScroll = ({ nativeEvent }) => {
     const { layoutMeasurement, contentOffset, contentSize } = nativeEvent;
