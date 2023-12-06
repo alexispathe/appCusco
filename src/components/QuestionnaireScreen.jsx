@@ -11,12 +11,7 @@ import {RadioButton, TextInput as PaperTextInput} from 'react-native-paper';
 import { requestExternalStoragePermission } from '../assets/permissions';
 import {prueba as questions} from '../database/preguntasCuscoDB';
 import { handleSaveDataStorage } from '../assets/questionnaireFunctions';
-export const QuestionnaireScreen = ({
-  meterNumber,
-  questionnaireNumber,
-  setStatus,
-  loadingStatus,
-}) => {
+export const QuestionnaireScreen = ({ meterNumber,questionnaireNumber,setStatus,loadingStatus,}) => {
   const [selectedOptions, setSelectedOptions] = useState({});
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const [userResponses, setUserResponses] = useState(null);
