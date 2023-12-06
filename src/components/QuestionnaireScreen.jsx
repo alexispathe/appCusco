@@ -1,5 +1,4 @@
 import React, {useState, useEffect, useRef} from 'react';
-import {PermissionsAndroid} from 'react-native';
 import {
   View,
   Text,
@@ -9,7 +8,9 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import {RadioButton, TextInput as PaperTextInput} from 'react-native-paper';
+import { requestExternalStoragePermission } from '../assets/permissions';
 import {prueba as questions, columns} from '../database/preguntasCuscoDB';
+import { handleSaveDataStorage } from '../assets/questionnaireFunctions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import XLSX from 'xlsx';
 import RNFS from 'react-native-fs';
@@ -37,6 +38,10 @@ export const QuestionnaireScreen = ({
     checkAllOptionsSelected();
   }, [selectedOptions]);
 
+  const permissions= async()=>{
+    const permissionsStatus = await requestExternalStoragePermission()
+    if(permissionsStatus) handleSaveDataStorage(meterNumber,questionnaireNumber,setStatus,questions, selectedOptions, setSelectedOptions, setUserResponses)
+  }
   const handleOptionSelect = (questionID, index) => {
     setSelectedOptions({
       ...selectedOptions,
@@ -52,232 +57,8 @@ export const QuestionnaireScreen = ({
     );
     setIsButtonDisabled(!allQuestionsAnswered);
   };
-  const handleSave=async()=>{
-    await handleSaveDataStorage()
-    await handleDownloadExcel();
-  }
-  const handleSaveDataStorage = async () => {
-    const userData = {};
-    questions.forEach(section => {
-      section.questions.forEach(question => {
-        const {questionID, questionType} = question;
-        if (selectedOptions[questionID] !== undefined) {
-          // Verifica el tipo de pregunta y guarda el valor adecuado
-          if (questionType === 'numberInput') {
-            userData[questionID] = parseInt(selectedOptions[questionID]) + 1;
-          } else if (questionType === 'radioButton') {
-            userData[questionID] = selectedOptions[questionID] + 1;
-          }
-        }
-      });
-    });
+  
 
-    const newUserData = {
-      results: userData,
-      meterNumber,
-      questionnaireNumber,
-    };
-
-    try {
-      const existingData = await AsyncStorage.getItem('userResult');
-      if (existingData !== null) {
-        const parsedExistingData = JSON.parse(existingData);
-        const updatedData = [...parsedExistingData, newUserData];
-        await AsyncStorage.setItem('userResult', JSON.stringify(updatedData));
-        setUserResponses(newUserData);
-        await handleSaveDataXlSX()
-        await setSelectedOptions({});
-        await setStatus(false);
-      } else {
-        await AsyncStorage.setItem('userResult', JSON.stringify([newUserData]));
-        setUserResponses(newUserData);
-      }
-    } catch (error) {
-      console.error('Error al guardar los datos:', error);
-    }
-  };
-  // Permisos para acceder a los archivos del celular
-  const requestExternalStoragePermission = async () => {
-    try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-        {
-          title: 'Permiso de escritura en almacenamiento externo',
-          message:
-            'Se requiere acceso a la carpeta de descargas para guardar archivos.',
-          buttonPositive: 'Aceptar',
-        },
-      );
-
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        console.log(
-          'Permiso de escritura en almacenamiento externo concedido.',
-        );
-        handleSaveDataStorage()
-        
-      } else {
-        console.log('Permiso de escritura en almacenamiento externo denegado.');
-      }
-    } catch (error) {
-      console.error(
-        'Error al solicitar permiso de escritura en almacenamiento externo:',
-        error,
-      );
-    }
-  };
-  // Funcion para guardar los datos en la carpeta de descargas
-  const handleDownloadExcel = async () => {
-    const sourcePath = `${RNFS.DocumentDirectoryPath}/cusco_v2.xlsx`;
-    const destinationPath = `${RNFS.DownloadDirectoryPath}/cusco_v2_descarga.xlsx`;
-
-    try {
-      const exists = await RNFS.exists(sourcePath);
-      if (!exists) {
-        console.log('El archivo Excel no existe en la ubicación especificada.');
-        return;
-      }
-
-      await RNFS.copyFile(sourcePath, destinationPath);
-      alert('Archivo  descargado correctamente');
-    } catch (error) {
-      console.error('Error al descargar el archivo Excel:', error);
-    }
-  };
-
-  const handleSaveDataXlSX = async () => {
-    try {
-      const filePath = `${RNFS.DownloadDirectoryPath}/cusco.xlsx`;
-      let workbook = null;
-      let existingData = null;
-  
-      if (await RNFS.exists(filePath)) {
-        existingData = await RNFS.readFile(filePath, 'base64');
-        workbook = XLSX.read(existingData, { type: 'base64' });
-      } else {
-        workbook = XLSX.utils.book_new();
-      }
-  
-      let sheetName = 'Datos';
-      let worksheet = workbook.Sheets[sheetName];
-  
-      if (!worksheet) {
-        worksheet = XLSX.utils.aoa_to_sheet([columns]);
-        XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
-      }
-      const userData = [questionnaireNumber];
-  
-      questions.forEach(section => {
-        section.questions.forEach(question => {
-          const { questionID, questionType } = question;
-          if (selectedOptions[questionID] !== undefined) {
-            let value = selectedOptions[questionID];
-  
-            if (questionType === 'numberInput') {
-              value = parseInt(value);
-            } else if (questionType === 'radioButton') {
-              value = parseInt(value) + 1;
-            }
-  
-            userData.push(value);
-          }
-        });
-      });
-      console.log(userData)
-
-      const lastRow = XLSX.utils.sheet_add_json(worksheet, [userData], {
-        header: ['ID'],
-        skipHeader: true,
-        origin: -1,
-      });
-  
-      
-      XLSX.utils.sheet_add_json(worksheet, [userData], {
-        skipHeader: true,
-        origin: lastRow + 1,
-      });
-  
-      const newExcelData = XLSX.write(workbook, {
-        bookType: 'xlsx',
-        type: 'base64',
-      });
-  
-      await RNFS.writeFile(filePath, newExcelData, 'base64');
-  
-      handleSaveDataXlSXString();
-      setStatus(false);
-    } catch (error) {
-      console.error('Error al guardar datos en Excel:', error);
-    }
-  };
-  const handleSaveDataXlSXString = async () => {
-    try {
-      const filePath = `${RNFS.DownloadDirectoryPath}/cusco_v2.xlsx`;
-      let workbook = null;
-      let existingData = null;
-  
-      if (await RNFS.exists(filePath)) {
-        existingData = await RNFS.readFile(filePath, 'base64');
-        workbook = XLSX.read(existingData, { type: 'base64' });
-      } else {
-        workbook = XLSX.utils.book_new();
-      }
-  
-      let sheetName = 'Datos';
-      let worksheet = workbook.Sheets[sheetName];
-  
-      if (!worksheet) {
-        worksheet = XLSX.utils.aoa_to_sheet([columns]);
-        XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
-      }
-      const userData = [questionnaireNumber];
-  
-      questions.forEach(section => {
-        section.questions.forEach(question => {
-          const { questionID, questionType,options } = question;
-          if (selectedOptions[questionID] !== undefined) {
-            let value;
-            let value2 = question.options[selectedOptions[questionID]];
-
-            if (questionType === 'numberInput') {
-
-              value = selectedOptions[questionID];
-              value = parseInt(value);
-            } else if (questionType === 'radioButton') {
-              value = value2;
-            }
-  
-            userData.push(value);
-          }
-        });
-      });
-      console.log(userData)
-
-      const lastRow = XLSX.utils.sheet_add_json(worksheet, [userData], {
-        header: ['ID'],
-        skipHeader: true,
-        origin: -1,
-      });
-  
-      
-      XLSX.utils.sheet_add_json(worksheet, [userData], {
-        skipHeader: true,
-        origin: lastRow + 1,
-      });
-  
-      const newExcelData = XLSX.write(workbook, {
-        bookType: 'xlsx',
-        type: 'base64',
-      });
-  
-      await RNFS.writeFile(filePath, newExcelData, 'base64');
-  
-      alert('Datos guardados correctamente.');
-      setSelectedOptions({});
-      setStatus(false);
-    } catch (error) {
-      console.error('Error al guardar datos en Excel:', error);
-    }
-  };
   
 
   const handleScroll = ({ nativeEvent }) => {
@@ -376,7 +157,7 @@ export const QuestionnaireScreen = ({
       )}
       <Button
         title="Guardar cuestionario"
-        onPress={requestExternalStoragePermission}
+        onPress={permissions}
         disabled={isButtonDisabled}
       />
       {/* <Button title="Descargar Excel" onPress={requestExternalStoragePermission} /> */}
