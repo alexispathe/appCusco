@@ -1,6 +1,7 @@
 import XLSX from 'xlsx';
 import RNFS from 'react-native-fs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { columns } from '../database/preguntasCuscoDB';
 export const handleSaveDataStorage = async (meterNumber,questionnaireNumber,setStatus,questions, selectedOptions, setSelectedOptions, setUserResponses) => {
     const userData = {};
     questions.forEach(section => {

@@ -9,11 +9,8 @@ import {
 } from 'react-native';
 import {RadioButton, TextInput as PaperTextInput} from 'react-native-paper';
 import { requestExternalStoragePermission } from '../assets/permissions';
-import {prueba as questions, columns} from '../database/preguntasCuscoDB';
+import {prueba as questions} from '../database/preguntasCuscoDB';
 import { handleSaveDataStorage } from '../assets/questionnaireFunctions';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import XLSX from 'xlsx';
-import RNFS from 'react-native-fs';
 export const QuestionnaireScreen = ({
   meterNumber,
   questionnaireNumber,
