@@ -7,11 +7,12 @@ import {
   ScrollView,
   ActivityIndicator,
 } from 'react-native';
+import { QuestionnaireStyles as styles } from '../styles/styles';
 import {RadioButton, TextInput as PaperTextInput} from 'react-native-paper';
 import { requestExternalStoragePermission } from '../assets/permissions';
 import {prueba as questions} from '../database/preguntasCuscoDB';
 import { handleSaveDataStorage } from '../assets/questionnaireFunctions';
-export const QuestionnaireScreen = ({setMeterNumber, setquestionnaireNumber, meterNumber,questionnaireNumber,setStatus,loadingStatus,}) => {
+export const QuestionnaireScreen = ({setMeterNumber, meterNumber,questionnaireNumber,setStatus,loadingStatus,}) => {
   const [selectedOptions, setSelectedOptions] = useState({});
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const [userResponses, setUserResponses] = useState(null);
@@ -156,42 +157,3 @@ export const QuestionnaireScreen = ({setMeterNumber, setquestionnaireNumber, met
     </ScrollView>
   );
 };
-const styles = StyleSheet.create({
-  scrollViewContainer: {
-    flexGrow: 1,
-    paddingVertical: 20,
-    paddingHorizontal: 10,
-  },
-  sectionContainer: {
-    backgroundColor: '#f9f9f9',
-    borderRadius: 10,
-    // marginBottom: 20,
-    padding: 10,
-  },
-  sectionTitle: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    color: '#6200EE',
-  },
-  questionContainer: {},
-  questionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 8,
-    color: '#333',
-  },
-  optionsContainer: {
-    // marginBottom: 10,
-  },
-  radioButtonContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 3,
-  },
-  optionText: {
-    marginLeft: 8,
-    fontSize: 16,
-    color: '#333',
-  },
-});

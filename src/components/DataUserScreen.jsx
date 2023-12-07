@@ -1,8 +1,9 @@
 
 import React, { useState, useEffect } from 'react';
-import { View, Text, Button, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
+import { View, Text, Button,  ScrollView, } from 'react-native';
+import { DataUserStyles as styles } from '../styles/styles';
 import { QuestionnaireScreen } from './QuestionnaireScreen';
-import {RadioButton, TextInput as PaperTextInput} from 'react-native-paper';
+import { TextInput as PaperTextInput} from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 export const DataUserScreen = () => {
   const [meterNumber, setMeterNumber] = useState('');
@@ -86,39 +87,3 @@ export const DataUserScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-    
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    color: 'black'
-  },
-  input: {
-    marginBottom: 20,
-    width: '100%',
-  },
-  label: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    color: 'black'
-  },
-  radioButtonContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    marginBottom: 20,
-  },
-  radioButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-});
