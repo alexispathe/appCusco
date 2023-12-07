@@ -682,7 +682,6 @@ export const prueba = [
 
 
   export const columns = [
-    '',
     'ID',
     'Edad',
     'Sexo',

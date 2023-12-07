@@ -75,8 +75,10 @@ export const DataUserScreen = () => {
           <QuestionnaireScreen
             meterNumber={meterNumber}
             questionnaireNumber={questionnaireNumber}
+            setMeterNumber={setMeterNumber}
             setStatus={setStatus}
             loadingStatus={loadingQuestions} 
+            
           />
         )}
       </View>

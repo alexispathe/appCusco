@@ -1,8 +1,10 @@
+// ESMOS CORRIGIENDO EL NUMERO DEL CUSTIONARIO PARA QUE ASI SE BORRE
+
 import XLSX from 'xlsx';
 import RNFS from 'react-native-fs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { columns } from '../database/preguntasCuscoDB';
-export const handleSaveDataStorage = async (meterNumber,questionnaireNumber,setStatus,questions, selectedOptions, setSelectedOptions, setUserResponses) => {
+export const handleSaveDataStorage = async (setMeterNumber,meterNumber,questionnaireNumber,setStatus,questions, selectedOptions, setSelectedOptions, setUserResponses) => {
     const userData = {};
     questions.forEach(section => {
       section.questions.forEach(question => {
@@ -31,7 +33,7 @@ export const handleSaveDataStorage = async (meterNumber,questionnaireNumber,setS
         const updatedData = [...parsedExistingData, newUserData];
         await AsyncStorage.setItem('userResult', JSON.stringify(updatedData));
         setUserResponses(newUserData);
-        await handleSaveDataXlSX(questionnaireNumber,questions, selectedOptions, setSelectedOptions,setStatus)
+        await handleSaveDataXlSX(setMeterNumber,questionnaireNumber,questions, selectedOptions, setSelectedOptions,setStatus)
       } else {
         await AsyncStorage.setItem('userResult', JSON.stringify([newUserData]));
         setUserResponses(newUserData);
@@ -42,9 +44,10 @@ export const handleSaveDataStorage = async (meterNumber,questionnaireNumber,setS
   };
   
  
-  const handleSaveDataXlSX = async (questionnaireNumber, questions, selectedOptions, setSelectedOptions,setStatus) => {
+  const handleSaveDataXlSX = async (setMeterNumber,questionnaireNumber, questions, selectedOptions, setSelectedOptions,setStatus) => {
     try {
-      const filePath = `${RNFS.DownloadDirectoryPath}/cusco.xlsx`;
+      const filePath = `${RNFS.DownloadDirectoryPath}/cusco_v1.xlsx`;
+    //   const columnas =["c1", "c2", "c3", "c4", "c5"]
       let workbook = null;
       let existingData = null;
   
@@ -82,17 +85,17 @@ export const handleSaveDataStorage = async (meterNumber,questionnaireNumber,setS
       });
       console.log(userData)
 
-      const lastRow = XLSX.utils.sheet_add_json(worksheet, [userData], {
-        header: ['ID'],
+      XLSX.utils.sheet_add_json(worksheet, [userData], {
+        header: [],
         skipHeader: true,
         origin: -1,
       });
   
       
-      XLSX.utils.sheet_add_json(worksheet, [userData], {
-        skipHeader: true,
-        origin: lastRow + 1,
-      });
+    //   XLSX.utils.sheet_add_json(worksheet, [userData], {
+    //     skipHeader: true,
+    //     origin: lastRow + 1,
+    //   });
   
       const newExcelData = XLSX.write(workbook, {
         bookType: 'xlsx',
@@ -101,12 +104,12 @@ export const handleSaveDataStorage = async (meterNumber,questionnaireNumber,setS
   
       await RNFS.writeFile(filePath, newExcelData, 'base64');
   
-      handleSaveDataXlSXString(questionnaireNumber, questions, selectedOptions, setSelectedOptions, setStatus);
+      handleSaveDataXlSXString(setMeterNumber,questionnaireNumber, questions, selectedOptions, setSelectedOptions, setStatus);
     } catch (error) {
       console.error('Error al guardar datos en Excel:', error);
     }
   };
-  const handleSaveDataXlSXString = async (questionnaireNumber, questions, selectedOptions,setSelectedOptions,setStatus) => {
+  const handleSaveDataXlSXString = async (setMeterNumber,questionnaireNumber, questions, selectedOptions,setSelectedOptions,setStatus) => {
     try {
       const filePath = `${RNFS.DownloadDirectoryPath}/cusco_v2.xlsx`;
       let workbook = null;
@@ -149,17 +152,17 @@ export const handleSaveDataStorage = async (meterNumber,questionnaireNumber,setS
       });
       console.log(userData)
 
-      const lastRow = XLSX.utils.sheet_add_json(worksheet, [userData], {
-        header: ['ID'],
+      XLSX.utils.sheet_add_json(worksheet, [userData], {
+        header: [],
         skipHeader: true,
         origin: -1,
       });
   
       
-      XLSX.utils.sheet_add_json(worksheet, [userData], {
-        skipHeader: true,
-        origin: lastRow + 1,
-      });
+    //   XLSX.utils.sheet_add_json(worksheet, [userData], {
+    //     skipHeader: true,
+    //     origin: lastRow + 1,
+    //   });
   
       const newExcelData = XLSX.write(workbook, {
         bookType: 'xlsx',
@@ -169,10 +172,11 @@ export const handleSaveDataStorage = async (meterNumber,questionnaireNumber,setS
       await RNFS.writeFile(filePath, newExcelData, 'base64');
   
       alert('Datos guardados correctamente.');
+      setMeterNumber('')
       setSelectedOptions({});
       setStatus(false);
     } catch (error) {
-      console.error('Error al guardar datos en Excel:', error);
+      console.error('Error al guardar datos en Excel DE STRING:', error);
     }
   };
 
