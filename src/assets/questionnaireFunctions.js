@@ -19,6 +19,25 @@ const generateID = () => {
     const idUnico = `id-${fecha}-${numeroAleatorio}`;
     return idUnico;
 }
+export const handleGetData = async () => {
+    // Obtener todos los documentos de la colección
+    try {
+        const datos = await getDocs(collection(db, 'resultadosEncuesta'));
+        const docs = [];
+        datos.forEach((doc) => {
+            const { results } = doc.data();
+            docs.push(
+                {
+                    // id: doc.id,
+                    results
+                });
+        });
+        console.log("datos", docs)
+    } catch (err) {
+        console.log('Ocurrio un error ', err)
+    }
+}
+
 export const handleSaveCloudFirestore = async (setMeterNumber, meterNumber, questionnaireNumber, setStatus, questions, selectedOptions, setSelectedOptions, setUserResponses) => {
 
     try {
@@ -284,23 +303,3 @@ const handleDownloadExcel = async () => {
     }
 };
 
-export const getData = () => {
-    // Obtener todos los documentos de la colección
-    const resultadosEncuestaRef = collection('resultadosEncuesta');
-    resultadosEncuestaRef
-        .get()
-        .then((querySnapshot) => {
-            // Iterar sobre los documentos obtenidos
-            querySnapshot.forEach((doc) => {
-                // Acceder a los datos de cada documento
-                const data = doc.data();
-                console.log('ID del documento:', doc.id);
-                console.log('Datos:', data);
-
-                // Aquí puedes hacer lo que necesites con los datos de cada documento
-            });
-        })
-        .catch((error) => {
-            console.error('Error al obtener documentos:', error);
-        });
-}

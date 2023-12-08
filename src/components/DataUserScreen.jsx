@@ -5,6 +5,7 @@ import { DataUserStyles as styles } from '../styles/styles';
 import { QuestionnaireScreen } from './QuestionnaireScreen';
 import { TextInput as PaperTextInput} from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {  handleGetData } from '../assets/questionnaireFunctions';
 export const DataUserScreen = () => {
   const [meterNumber, setMeterNumber] = useState('');
   const [questionnaireNumber, setquestionnaireNumber] = useState(1);
@@ -70,6 +71,11 @@ export const DataUserScreen = () => {
               title="Continuar"
               onPress={handleFormSubmit}
               disabled={isButtonDisabled}
+            />
+            <Button
+              title="Descargar datis"
+              onPress={handleGetData}
+              // disabled={isButtonDisabled}
             />
           </View>
         ) : (
