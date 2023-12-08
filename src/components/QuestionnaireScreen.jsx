@@ -11,7 +11,7 @@ import { QuestionnaireStyles as styles } from '../styles/styles';
 import {RadioButton, TextInput as PaperTextInput} from 'react-native-paper';
 import { requestExternalStoragePermission } from '../assets/permissions';
 import {prueba as questions} from '../database/preguntasCuscoDB';
-import { handleSaveDataStorage } from '../assets/questionnaireFunctions';
+import { handleSaveDataStorage, handleSaveCloudFirestore } from '../assets/questionnaireFunctions';
 export const QuestionnaireScreen = ({setMeterNumber, meterNumber,questionnaireNumber,setStatus,loadingStatus,}) => {
   const [selectedOptions, setSelectedOptions] = useState({});
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
@@ -33,7 +33,7 @@ export const QuestionnaireScreen = ({setMeterNumber, meterNumber,questionnaireNu
 
   const permissions= async()=>{
     const permissionsStatus = await requestExternalStoragePermission()
-    if(permissionsStatus) handleSaveDataStorage(setMeterNumber,meterNumber,questionnaireNumber,setStatus,questions, selectedOptions, setSelectedOptions, setUserResponses)
+    if(permissionsStatus) handleSaveCloudFirestore(setMeterNumber,meterNumber,questionnaireNumber,setStatus,questions, selectedOptions, setSelectedOptions, setUserResponses)
   }
   const handleOptionSelect = (questionID, index) => {
     setSelectedOptions({

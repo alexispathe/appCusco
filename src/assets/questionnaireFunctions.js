@@ -4,6 +4,51 @@ import XLSX from 'xlsx';
 import RNFS from 'react-native-fs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { columns } from '../database/preguntasCuscoDB';
+// Importar firebase
+import { appFirebase } from '../auth/credentials';
+import {getFirestore, collection, addDoc, getDoc, doc, deleteDoc, getDocs, setDoc} from 'firebase/firestore'
+import { Alert } from 'react-native';
+const   db = getFirestore(appFirebase)
+export const handleSaveCloudFirestore = async (setMeterNumber,meterNumber,questionnaireNumber,setStatus,questions, selectedOptions, setSelectedOptions, setUserResponses) => {
+    const userData = {};
+    questions.forEach(section => {
+      section.questions.forEach(question => {
+        const {questionID, questionType} = question;
+        if (selectedOptions[questionID] !== undefined) {
+          // Verifica el tipo de pregunta y guarda el valor adecuado
+          if (questionType === 'numberInput') {
+            userData[questionID] = parseInt(selectedOptions[questionID]) + 1;
+          } else if (questionType === 'radioButton') {
+            userData[questionID] = selectedOptions[questionID] + 1;
+          }
+        }
+      });
+    });
+
+    const newUserData = {
+      results: userData,
+      meterNumber,
+      questionnaireNumber,
+    };
+
+    try {
+        await addDoc(collection(db, 'resultadosEncuesta'), newUserData);
+        Alert.alert('Alerta', 'Datos guardados correctamente')
+    //   const existingData = await AsyncStorage.getItem('userResult');
+    //   if (existingData !== null) {
+    //     const parsedExistingData = JSON.parse(existingData);
+    //     const updatedData = [...parsedExistingData, newUserData];
+    //     await AsyncStorage.setItem('userResult', JSON.stringify(updatedData));
+    //     setUserResponses(newUserData);
+    //     await handleSaveDataXlSX(setMeterNumber,questionnaireNumber,questions, selectedOptions, setSelectedOptions,setStatus)
+    //   } else {
+    //     await AsyncStorage.setItem('userResult', JSON.stringify([newUserData]));
+    //     setUserResponses(newUserData);
+    //   }
+    } catch (error) {
+      console.error('Error al guardar los datos:', error);
+    }
+  };
 export const handleSaveDataStorage = async (setMeterNumber,meterNumber,questionnaireNumber,setStatus,questions, selectedOptions, setSelectedOptions, setUserResponses) => {
     const userData = {};
     questions.forEach(section => {
