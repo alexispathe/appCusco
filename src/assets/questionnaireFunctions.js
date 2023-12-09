@@ -23,16 +23,16 @@ export const handleGetData = async () => {
     // Obtener todos los documentos de la colección
     try {
         const datos = await getDocs(collection(db, 'resultadosEncuesta'));
-        const docs = [];
+        const docs = []; //aqui se almacena toda la informacion de de los resultados de la encuesta
         datos.forEach((doc) => {
-            const { results } = doc.data();
+            const { dataType, results } = doc.data();
             docs.push(
                 {
-                    // id: doc.id,
+                    dataType,
                     results
                 });
         });
-        console.log("datos", docs)
+        return docs;
     } catch (err) {
         console.log('Ocurrio un error ', err)
     }
@@ -145,11 +145,61 @@ export const handleSaveDataStorage = async (setMeterNumber, meterNumber, questio
         console.error('Error al guardar los datos:', error);
     }
 };
+export const handleSaveDataXlSXNumeric = async (setMeterNumber, questionnaireNumber, questions, selectedOptions, setSelectedOptions, setStatus) => {
+    try {
+        const dataCloudFirestore = await handleGetData();
+        const dataSurvey = dataCloudFirestore.filter(data => data.dataType === 'numeric');
+        const valuesArray = [];
+        dataSurvey.forEach(data => {
+            const values = Object.values(data.results);
+            valuesArray.push(values);
+        });
 
+        console.log(valuesArray);
+
+
+        const filePath = `${RNFS.DownloadDirectoryPath}/cusco_numeric.xlsx`;
+        //   const columnas =["c1", "c2", "c3", "c4", "c5"]
+        let workbook = null;
+        let existingData = null;
+
+        if (await RNFS.exists(filePath)) {
+            existingData = await RNFS.readFile(filePath, 'base64');
+            workbook = XLSX.read(existingData, { type: 'base64' });
+        } else {
+            workbook = XLSX.utils.book_new();
+        }
+
+        let sheetName = 'Datos';
+        let worksheet = workbook.Sheets[sheetName];
+
+        if (!worksheet) {
+            worksheet = XLSX.utils.aoa_to_sheet([columns]);
+            XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
+        }
+
+        XLSX.utils.sheet_add_aoa(worksheet, valuesArray, {
+            header: [],
+            skipHeader: true,
+            origin: -1,
+        });
+
+        const newExcelData = XLSX.write(workbook, {
+            bookType: 'xlsx',
+            type: 'base64',
+        });
+
+        await RNFS.writeFile(filePath, newExcelData, 'base64');
+
+        // handleSaveDataXlSXString(setMeterNumber, questionnaireNumber, questions, selectedOptions, setSelectedOptions, setStatus);
+    } catch (error) {
+        console.error('Error al guardar datos en Excel:', error);
+    }
+};
 
 const handleSaveDataXlSX = async (setMeterNumber, questionnaireNumber, questions, selectedOptions, setSelectedOptions, setStatus) => {
     try {
-        const filePath = `${RNFS.DownloadDirectoryPath}/cusco_v1.xlsx`;
+        const filePath = `${RNFS.DownloadDirectoryPath}/cusco_numeric.xlsx`;
         //   const columnas =["c1", "c2", "c3", "c4", "c5"]
         let workbook = null;
         let existingData = null;
