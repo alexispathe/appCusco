@@ -145,7 +145,7 @@ export const handleSaveDataStorage = async (setMeterNumber, meterNumber, questio
         console.error('Error al guardar los datos:', error);
     }
 };
-export const handleSaveDataXlSXNumeric = async (setMeterNumber, questionnaireNumber, questions, selectedOptions, setSelectedOptions, setStatus) => {
+export const handleSaveDataXlSXNumeric = async () => {
     try {
         const dataCloudFirestore = await handleGetData();
         const dataSurvey = dataCloudFirestore.filter(data => data.dataType === 'numeric');
@@ -155,20 +155,13 @@ export const handleSaveDataXlSXNumeric = async (setMeterNumber, questionnaireNum
             valuesArray.push(values);
         });
 
-        console.log(valuesArray);
-
-
         const filePath = `${RNFS.DownloadDirectoryPath}/cusco_numeric.xlsx`;
-        //   const columnas =["c1", "c2", "c3", "c4", "c5"]
         let workbook = null;
-        let existingData = null;
 
         if (await RNFS.exists(filePath)) {
-            existingData = await RNFS.readFile(filePath, 'base64');
-            workbook = XLSX.read(existingData, { type: 'base64' });
-        } else {
-            workbook = XLSX.utils.book_new();
+            await RNFS.unlink(filePath); // Elimina el archivo existente
         }
+        workbook = XLSX.utils.book_new();
 
         let sheetName = 'Datos';
         let worksheet = workbook.Sheets[sheetName];
@@ -191,25 +184,32 @@ export const handleSaveDataXlSXNumeric = async (setMeterNumber, questionnaireNum
 
         await RNFS.writeFile(filePath, newExcelData, 'base64');
 
-        // handleSaveDataXlSXString(setMeterNumber, questionnaireNumber, questions, selectedOptions, setSelectedOptions, setStatus);
+        handleSaveDataXlSXString();
     } catch (error) {
         console.error('Error al guardar datos en Excel:', error);
     }
 };
 
-const handleSaveDataXlSX = async (setMeterNumber, questionnaireNumber, questions, selectedOptions, setSelectedOptions, setStatus) => {
+
+const handleSaveDataXlSXString = async () => {
     try {
-        const filePath = `${RNFS.DownloadDirectoryPath}/cusco_numeric.xlsx`;
-        //   const columnas =["c1", "c2", "c3", "c4", "c5"]
+
+        const dataCloudFirestore = await handleGetData();
+        const dataSurvey = dataCloudFirestore.filter(data => data.dataType === 'written');
+        const valuesArray = [];
+        dataSurvey.forEach(data => {
+            const values = Object.values(data.results);
+            valuesArray.push(values);
+        });
+
+        const filePath = `${RNFS.DownloadDirectoryPath}/cusco_string.xlsx`;
         let workbook = null;
-        let existingData = null;
 
         if (await RNFS.exists(filePath)) {
-            existingData = await RNFS.readFile(filePath, 'base64');
-            workbook = XLSX.read(existingData, { type: 'base64' });
-        } else {
-            workbook = XLSX.utils.book_new();
+            await RNFS.unlink(filePath); // Elimina el archivo existente
         }
+        workbook = XLSX.utils.book_new();
+
 
         let sheetName = 'Datos';
         let worksheet = workbook.Sheets[sheetName];
@@ -218,38 +218,13 @@ const handleSaveDataXlSX = async (setMeterNumber, questionnaireNumber, questions
             worksheet = XLSX.utils.aoa_to_sheet([columns]);
             XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
         }
-        const userData = [questionnaireNumber];
 
-        questions.forEach(section => {
-            section.questions.forEach(question => {
-                const { questionID, questionType } = question;
-                if (selectedOptions[questionID] !== undefined) {
-                    let value = selectedOptions[questionID];
 
-                    if (questionType === 'numberInput') {
-                        value = parseInt(value);
-                    } else if (questionType === 'radioButton') {
-                        value = parseInt(value) + 1;
-                    }
-
-                    userData.push(value);
-                }
-            });
-        });
-        console.log(userData)
-
-        XLSX.utils.sheet_add_json(worksheet, [userData], {
+        XLSX.utils.sheet_add_aoa(worksheet, valuesArray, {
             header: [],
             skipHeader: true,
             origin: -1,
         });
-
-
-        //   XLSX.utils.sheet_add_json(worksheet, [userData], {
-        //     skipHeader: true,
-        //     origin: lastRow + 1,
-        //   });
-
         const newExcelData = XLSX.write(workbook, {
             bookType: 'xlsx',
             type: 'base64',
@@ -257,77 +232,8 @@ const handleSaveDataXlSX = async (setMeterNumber, questionnaireNumber, questions
 
         await RNFS.writeFile(filePath, newExcelData, 'base64');
 
-        handleSaveDataXlSXString(setMeterNumber, questionnaireNumber, questions, selectedOptions, setSelectedOptions, setStatus);
-    } catch (error) {
-        console.error('Error al guardar datos en Excel:', error);
-    }
-};
-const handleSaveDataXlSXString = async (setMeterNumber, questionnaireNumber, questions, selectedOptions, setSelectedOptions, setStatus) => {
-    try {
-        const filePath = `${RNFS.DownloadDirectoryPath}/cusco_v2.xlsx`;
-        let workbook = null;
-        let existingData = null;
-
-        if (await RNFS.exists(filePath)) {
-            existingData = await RNFS.readFile(filePath, 'base64');
-            workbook = XLSX.read(existingData, { type: 'base64' });
-        } else {
-            workbook = XLSX.utils.book_new();
-        }
-
-        let sheetName = 'Datos';
-        let worksheet = workbook.Sheets[sheetName];
-
-        if (!worksheet) {
-            worksheet = XLSX.utils.aoa_to_sheet([columns]);
-            XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
-        }
-        const userData = [questionnaireNumber];
-
-        questions.forEach(section => {
-            section.questions.forEach(question => {
-                const { questionID, questionType, options } = question;
-                if (selectedOptions[questionID] !== undefined) {
-                    let value;
-                    let value2 = question.options[selectedOptions[questionID]];
-
-                    if (questionType === 'numberInput') {
-
-                        value = selectedOptions[questionID];
-                        value = parseInt(value);
-                    } else if (questionType === 'radioButton') {
-                        value = value2;
-                    }
-
-                    userData.push(value);
-                }
-            });
-        });
-        console.log(userData)
-
-        XLSX.utils.sheet_add_json(worksheet, [userData], {
-            header: [],
-            skipHeader: true,
-            origin: -1,
-        });
-
-
-        //   XLSX.utils.sheet_add_json(worksheet, [userData], {
-        //     skipHeader: true,
-        //     origin: lastRow + 1,
-        //   });
-
-        const newExcelData = XLSX.write(workbook, {
-            bookType: 'xlsx',
-            type: 'base64',
-        });
-
-        await RNFS.writeFile(filePath, newExcelData, 'base64');
 
         alert('Datos guardados correctamente.');
-        setMeterNumber('')
-        setSelectedOptions({});
-        setStatus(false);
     } catch (error) {
         console.error('Error al guardar datos en Excel DE STRING:', error);
     }
