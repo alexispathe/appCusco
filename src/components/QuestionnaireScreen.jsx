@@ -7,12 +7,22 @@ import {
   ScrollView,
   ActivityIndicator,
 } from 'react-native';
-import { QuestionnaireStyles as styles } from '../styles/styles';
+import {QuestionnaireStyles as styles, PickerStyles} from '../styles/styles';
 import {RadioButton, TextInput as PaperTextInput} from 'react-native-paper';
-import { requestExternalStoragePermission } from '../assets/permissions';
+import {requestExternalStoragePermission} from '../assets/permissions';
 import {prueba as questions} from '../database/preguntasCuscoDB';
-import { handleSaveDataStorage, handleSaveCloudFirestore } from '../assets/questionnaireFunctions';
-export const QuestionnaireScreen = ({setMeterNumber, meterNumber,questionnaireNumber,setStatus,loadingStatus,}) => {
+import {
+  handleSaveDataStorage,
+  handleSaveCloudFirestore,
+} from '../assets/questionnaireFunctions';
+import {Picker} from '@react-native-picker/picker';
+export const QuestionnaireScreen = ({
+  setMeterNumber,
+  meterNumber,
+  questionnaireNumber,
+  setStatus,
+  loadingStatus,
+}) => {
   const [selectedOptions, setSelectedOptions] = useState({});
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const [userResponses, setUserResponses] = useState(null);
@@ -20,6 +30,7 @@ export const QuestionnaireScreen = ({setMeterNumber, meterNumber,questionnaireNu
   const scrollViewRef = useRef(null);
   const [visibleQuestions, setVisibleQuestions] = useState([]);
   const [startIndex, setStartIndex] = useState(0);
+  const [selectedYear, setSelectedYear] = useState('2023'); // Año seleccionado por defecto
   const pageSize = 10;
 
   useEffect(() => {
@@ -31,10 +42,21 @@ export const QuestionnaireScreen = ({setMeterNumber, meterNumber,questionnaireNu
     checkAllOptionsSelected();
   }, [selectedOptions]);
 
-  const permissions= async()=>{
-    const permissionsStatus = await requestExternalStoragePermission()
-    if(permissionsStatus) handleSaveCloudFirestore(setMeterNumber,meterNumber,questionnaireNumber,setStatus,questions, selectedOptions, setSelectedOptions, setUserResponses)
-  }
+  const permissions = async () => {
+    const permissionsStatus = await requestExternalStoragePermission();
+    if (permissionsStatus)
+      handleSaveCloudFirestore(
+        selectedYear,
+        setMeterNumber,
+        meterNumber,
+        questionnaireNumber,
+        setStatus,
+        questions,
+        selectedOptions,
+        setSelectedOptions,
+        setUserResponses,
+      );
+  };
   const handleOptionSelect = (questionID, index) => {
     setSelectedOptions({
       ...selectedOptions,
@@ -50,34 +72,36 @@ export const QuestionnaireScreen = ({setMeterNumber, meterNumber,questionnaireNu
     );
     setIsButtonDisabled(!allQuestionsAnswered);
   };
-  
 
-  
-
-  const handleScroll = ({ nativeEvent }) => {
-    const { layoutMeasurement, contentOffset, contentSize } = nativeEvent;
+  const handleScroll = ({nativeEvent}) => {
+    const {layoutMeasurement, contentOffset, contentSize} = nativeEvent;
     const paddingToBottom = 20;
-  
+
     if (
       layoutMeasurement.height + contentOffset.y >=
-      contentSize.height - paddingToBottom &&
+        contentSize.height - paddingToBottom &&
       !loading // Agregar una verificación para evitar la carga mientras ya está cargando
     ) {
       setLoading(true);
-      alert("Scrroll")
+      alert('Scrroll');
       // Calcula la nueva página de preguntas a cargar
       const newStartIndex = startIndex + pageSize;
-      const additionalQuestions = questions.slice(newStartIndex, newStartIndex + pageSize);
-  
+      const additionalQuestions = questions.slice(
+        newStartIndex,
+        newStartIndex + pageSize,
+      );
+
       // Simula un retraso para mostrar la lógica de carga
       setTimeout(() => {
-        setVisibleQuestions(prevQuestions => prevQuestions.concat(additionalQuestions));
+        setVisibleQuestions(prevQuestions =>
+          prevQuestions.concat(additionalQuestions),
+        );
         setStartIndex(newStartIndex);
         setLoading(false);
       }, 1000); // Simula una carga, podrías ajustar este tiempo según tus necesidades
     }
   };
-  
+
   return (
     <ScrollView
       ref={scrollViewRef}
@@ -92,7 +116,26 @@ export const QuestionnaireScreen = ({setMeterNumber, meterNumber,questionnaireNu
       ) : (
         <>
           {visibleQuestions.map((section, sectionIndex) => (
-            <View key={sectionIndex} style={styles.sectionContainer}>
+            <View key={sectionIndex} style={PickerStyles.sectionContainer}>
+              {/* Contenedor del picker */}
+              <View style={PickerStyles.container}>
+                <View style={PickerStyles.pickerContainer}>
+                  <Text style={PickerStyles.label}>Selecciona el año de la encuesta:</Text>
+                  <Picker
+                    selectedValue={selectedYear}
+                    style={PickerStyles.picker}
+                    onValueChange={itemValue => setSelectedYear(itemValue)}>
+                    <Picker.Item label="2023" value="2023" />
+                    <Picker.Item label="2024" value="2024" />
+                    <Picker.Item label="2025" value="2025" />
+                    <Picker.Item label="2026" value="2026" />
+                    <Picker.Item label="2027" value="2027" />
+                    <Picker.Item label="2028" value="2028" />
+                    {/* Agregar más años si es necesario */}
+                  </Picker>
+                </View>
+              </View>
+              {/* Fin del contenedor Picker */}
               <Text style={styles.sectionTitle}>{section.title}</Text>
               {section.questions.map((question, questionIndex) => (
                 <View

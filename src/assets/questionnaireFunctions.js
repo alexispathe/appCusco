@@ -1,7 +1,4 @@
-// ESMOS CORRIGIENDO EL NUMERO DEL CUSTIONARIO PARA QUE ASI SE BORRE
 
-import XLSX from 'xlsx';
-import RNFS from 'react-native-fs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { columns } from '../database/preguntasCuscoDB';
 // Importar firebase
@@ -25,9 +22,9 @@ export const handleGetData = async () => {
         const datos = await getDocs(collection(db, 'resultadosEncuesta'));
         const docs = []; //aqui se almacena toda la informacion de de los resultados de la encuesta
         datos.forEach((doc) => {
-            const { dataType, results } = doc.data();
+            const { dataType, results,year } = doc.data();
             docs.push(
-                {
+                {   year,
                     dataType,
                     results
                 });
@@ -38,7 +35,7 @@ export const handleGetData = async () => {
     }
 }
 
-export const handleSaveCloudFirestore = async (setMeterNumber, meterNumber, questionnaireNumber, setStatus, questions, selectedOptions, setSelectedOptions, setUserResponses) => {
+export const handleSaveCloudFirestore = async (selectedYear,setMeterNumber, meterNumber, questionnaireNumber, setStatus, questions, selectedOptions, setSelectedOptions, setUserResponses) => {
 
     try {
         // Guardando los datos en numero 
@@ -58,6 +55,7 @@ export const handleSaveCloudFirestore = async (setMeterNumber, meterNumber, ques
             });
         });
         const newUserData = {
+            year: selectedYear,
             surveyID,
             dataType: 'numeric',
             results: userData,
@@ -80,6 +78,7 @@ export const handleSaveCloudFirestore = async (setMeterNumber, meterNumber, ques
             });
         });
         const userDataText = {
+            year: selectedYear,
             surveyID,
             dataType: 'written',
             questionnaireNumber,
@@ -143,102 +142,6 @@ export const handleSaveDataStorage = async (setMeterNumber, meterNumber, questio
         }
     } catch (error) {
         console.error('Error al guardar los datos:', error);
-    }
-};
-export const handleSaveDataXlSXNumeric = async () => {
-    try {
-        const dataCloudFirestore = await handleGetData();
-        const dataSurvey = dataCloudFirestore.filter(data => data.dataType === 'numeric');
-        const valuesArray = [];
-        dataSurvey.forEach((data,index) => {
-            const values = Object.values(data.results);
-            values.unshift(index + 1);
-            valuesArray.push(values);
-        });
-
-        const filePath = `${RNFS.DownloadDirectoryPath}/cusco_numeric.xlsx`;
-        let workbook = null;
-
-        if (await RNFS.exists(filePath)) {
-            await RNFS.unlink(filePath); // Elimina el archivo existente
-        }
-        workbook = XLSX.utils.book_new();
-
-        let sheetName = 'Datos';
-        let worksheet = workbook.Sheets[sheetName];
-
-        if (!worksheet) {
-            worksheet = XLSX.utils.aoa_to_sheet([columns]);
-            XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
-        }
-
-        XLSX.utils.sheet_add_aoa(worksheet, valuesArray, {
-            header: [],
-            skipHeader: true,
-            origin: -1,
-        });
-
-        const newExcelData = XLSX.write(workbook, {
-            bookType: 'xlsx',
-            type: 'base64',
-        });
-
-        await RNFS.writeFile(filePath, newExcelData, 'base64');
-
-        handleSaveDataXlSXString();
-    } catch (error) {
-        console.error('Error al guardar datos en Excel:', error);
-    }
-};
-
-const handleSaveDataXlSXString = async () => {
-    try {
-
-        const dataCloudFirestore = await handleGetData();
-        const dataSurvey = dataCloudFirestore.filter(data => data.dataType === 'written');
-        const valuesArray = [];
-        dataSurvey.forEach((data, index) => {
-            const values = Object.values(data.results);
-            // Agregar el índice al inicio del array de valores
-            values.unshift(index + 1); // Se agrega +1 para que el índice comience en 1 en lugar de 0
-            valuesArray.push(values);
-        });
-        
-
-        const filePath = `${RNFS.DownloadDirectoryPath}/cusco_string.xlsx`;
-        let workbook = null;
-
-        if (await RNFS.exists(filePath)) {
-            await RNFS.unlink(filePath); // Elimina el archivo existente
-        }
-        workbook = XLSX.utils.book_new();
-
-
-        let sheetName = 'Datos';
-        let worksheet = workbook.Sheets[sheetName];
-
-        if (!worksheet) {
-            worksheet = XLSX.utils.aoa_to_sheet([columns]);
-            XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
-        }
-
-
-        XLSX.utils.sheet_add_aoa(worksheet, valuesArray, {
-            header: [],
-            skipHeader: true,
-            origin: -1,
-        });
-        const newExcelData = XLSX.write(workbook, {
-            bookType: 'xlsx',
-            type: 'base64',
-        });
-
-        await RNFS.writeFile(filePath, newExcelData, 'base64');
-
-
-        alert('Datos guardados correctamente.');
-    } catch (error) {
-        console.error('Error al guardar datos en Excel DE STRING:', error);
     }
 };
 

@@ -77,3 +77,28 @@ export const DataUserStyles = StyleSheet.create({
       marginBottom: 10,
     },
   });
+
+export const PickerStyles = StyleSheet.create({
+    container: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    pickerContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: 20,
+    },
+    label: {
+      marginRight: 10,
+      fontWeight: 'bold',
+      color: 'black'
+    },
+    picker: {
+      height: 50,
+      width: 150,
+    },
+    filePath: {
+      marginTop: 20,
+    },
+  });
