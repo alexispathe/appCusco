@@ -150,8 +150,9 @@ export const handleSaveDataXlSXNumeric = async () => {
         const dataCloudFirestore = await handleGetData();
         const dataSurvey = dataCloudFirestore.filter(data => data.dataType === 'numeric');
         const valuesArray = [];
-        dataSurvey.forEach(data => {
+        dataSurvey.forEach((data,index) => {
             const values = Object.values(data.results);
+            values.unshift(index + 1);
             valuesArray.push(values);
         });
 
@@ -190,17 +191,19 @@ export const handleSaveDataXlSXNumeric = async () => {
     }
 };
 
-
 const handleSaveDataXlSXString = async () => {
     try {
 
         const dataCloudFirestore = await handleGetData();
         const dataSurvey = dataCloudFirestore.filter(data => data.dataType === 'written');
         const valuesArray = [];
-        dataSurvey.forEach(data => {
+        dataSurvey.forEach((data, index) => {
             const values = Object.values(data.results);
+            // Agregar el índice al inicio del array de valores
+            values.unshift(index + 1); // Se agrega +1 para que el índice comience en 1 en lugar de 0
             valuesArray.push(values);
         });
+        
 
         const filePath = `${RNFS.DownloadDirectoryPath}/cusco_string.xlsx`;
         let workbook = null;
@@ -239,23 +242,4 @@ const handleSaveDataXlSXString = async () => {
     }
 };
 
-
-// Funcion para guardar los datos en la carpeta de descargas
-const handleDownloadExcel = async () => {
-    const sourcePath = `${RNFS.DocumentDirectoryPath}/cusco_v2.xlsx`;
-    const destinationPath = `${RNFS.DownloadDirectoryPath}/cusco_v2_descarga.xlsx`;
-
-    try {
-        const exists = await RNFS.exists(sourcePath);
-        if (!exists) {
-            console.log('El archivo Excel no existe en la ubicación especificada.');
-            return;
-        }
-
-        await RNFS.copyFile(sourcePath, destinationPath);
-        alert('Archivo  descargado correctamente');
-    } catch (error) {
-        console.error('Error al descargar el archivo Excel:', error);
-    }
-};
 
