@@ -86,22 +86,13 @@ export const handleSaveCloudFirestore = async (selectedYear,setMeterNumber, mete
             results: userResponseText
 
         };
-        console.log(newUserData)
-        console.log(userDataText)
+        
         await addDoc(collection(db, 'resultadosEncuesta'), newUserData);
         await addDoc(collection(db, 'resultadosEncuesta'), userDataText);
         Alert.alert('Alerta', 'Datos guardados correctamente')
-        //   const existingData = await AsyncStorage.getItem('userResult');
-        //   if (existingData !== null) {
-        //     const parsedExistingData = JSON.parse(existingData);
-        //     const updatedData = [...parsedExistingData, newUserData];
-        //     await AsyncStorage.setItem('userResult', JSON.stringify(updatedData));
-        //     setUserResponses(newUserData);
-        //     await handleSaveDataXlSX(setMeterNumber,questionnaireNumber,questions, selectedOptions, setSelectedOptions,setStatus)
-        //   } else {
-        //     await AsyncStorage.setItem('userResult', JSON.stringify([newUserData]));
-        //     setUserResponses(newUserData);
-        //   }
+        setSelectedOptions({});
+        setStatus(false);
+
     } catch (error) {
         console.error('Error al guardar los datos:', error);
     }
