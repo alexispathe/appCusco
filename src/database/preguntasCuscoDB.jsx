@@ -322,12 +322,12 @@ export const preguntasCusco = [
     questions:[
             {
                 title: 'Aproximadamente ¿Cuánto pesa sin zapatos? Kg',
-                options:[0],
+                options:[],
                 questionType: 'numberInput',
                 questionID: 'peso-sin-zapatos-413'
             },{
                 title: 'Aproximadamente ¿Cuánto mide sin zapatos? M',
-                options:[0],
+                options:[],
                 questionType: 'numberInput',
                 questionID: 'peso-sin-zapatos-043'
             },
@@ -515,7 +515,7 @@ export const preguntasCusco = [
           },
           {
             title: 'Regularmente, ¿Cuántas horas duerme diariamente?',
-            options: ['0'],
+            options: [],
             questionType: 'numberInput',
             questionID: 'horas-sueno-diarias-237',
           },
@@ -562,7 +562,7 @@ export const preguntasCusco = [
           },
           {
             title: 'En promedio, ¿cuántos cigarros fuma actualmente por día?',
-            options: ['0'],
+            options: [],
             questionType: 'numberInput',
             questionID: 'promedio-cigarros-dia-235',
           },
@@ -580,13 +580,13 @@ export const preguntasCusco = [
           },
           {
             title: 'En promedio, ¿cuántas copas toma por ocasión?',
-            options: ['0'],
+            options: [],
             questionType: 'numberInput',
             questionID: 'promedio-copas-ocasion-238',
           },
           {
             title: 'En promedio, ¿cuántas horas trabaja diariamente?',
-            options: ['0'],
+            options: [],
             questionType: 'numberInput',
             questionID: 'horas-trabajo-diarias-239',
           },
