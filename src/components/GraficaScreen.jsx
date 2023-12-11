@@ -1,6 +1,6 @@
 import {handleGetData} from '../assets/questionnaireFunctions';
 import {useEffect, useState} from 'react';
-import {ScrollView, View, Dimensions, Text} from 'react-native';
+import {ScrollView, View, Dimensions, Text, processColor} from 'react-native';
 import {BarChart} from 'react-native-charts-wrapper';
 import {prueba as preguntas} from '../database/preguntasCuscoDB';
 
@@ -82,7 +82,6 @@ export const GraficaScreen = () => {
     }
 
     setDataGraficas(dataProcesada);
-    console.log(dataGrafica);
   };
 
   const generarDatosGrafica = (indicePregunta) => {
@@ -97,7 +96,7 @@ export const GraficaScreen = () => {
           values: valores,
           label: 'Respuestas',
           config: {
-            colors: '#2979FF', // Color de las barras
+            colors: [processColor('#2979FF')], // Color de las barras
             valueTextSize: 12,
           },
         },
@@ -112,7 +111,7 @@ export const GraficaScreen = () => {
       <View style={{flex: 1}}>
         {dataGraficas.map((pregunta, index) => (
           <View key={index} style={{height: 300}}>
-            <Text>{pregunta.pregunta}</Text>
+            <Text style={{textAlign: 'center', color:'black',fontWeight:'bold'}}>{pregunta.pregunta}</Text>
             <BarChart
               style={{flex: 1}}
               data={generarDatosGrafica(index)}
