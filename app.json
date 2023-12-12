@@ -1,4 +1,8 @@
 {
   "name": "app_cusco",
-  "displayName": "app_cusco"
+  "displayName": "app_cusco",
+  "hermes": {
+    "enabled": true,
+    "commandUnlink": "node node_modules/hermes-engine/unlink"
+  }
 }
