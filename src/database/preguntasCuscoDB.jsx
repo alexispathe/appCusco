@@ -816,12 +816,14 @@ export const prueba = [
         options: [],
         questionType: 'numberInput',
         questionID: 'edad-actual-123',
+        id: 1
       },
       {
         title: '¿Cuál es su sexo?',
         options: ['Hombre', 'Mujer'],
         questionType: 'radioButton',
         questionID: 'cual-es-su-sexo-123',
+        id: 2
       },
       {
         title: '¿Cuál es su estado civil?',
@@ -834,10 +836,55 @@ export const prueba = [
         ],
         questionType: 'radioButton',
         questionID: 'estado-civil-123',
+        id: 3
       },
     ],
     questionCuscoID: 1,
   },
+  {
+    title: 'Autopercepción de Salud  y Prevención',
+    questions: [
+      {
+        title: '¿Cómo considera usted que es su estado de salud actual?',
+        options: ['Excelente', 'Muy bueno', 'Bueno', 'Regular', 'Malo'],
+        questionType: 'radioButton',
+        questionID: 'salud-actual-231',
+        id:13
+      },
+      {
+        title:
+          'Cuando usted tiene problemas de salud ¿En dónde se atiende usualmente?',
+        options: [
+          'IMSS',
+          'ISSSTE',
+          'INSABI',
+          'Consultorio',
+          'Clínica u Hospital Privado',
+          'Se Automedica',
+          'No se atiende',
+          'Otro',
+        ],
+        questionType: 'radioButton',
+        questionID: 'donde-atiende-salud-456',
+        id:14
+      },
+      {
+        title: '¿Con qué tipo de seguridad social cuenta?',
+        options: ['IMSS', 'ISSSTE', 'INSABI', 'Privado', 'Ninguno'],
+        questionType: 'radioButton',
+        questionID: 'seguridad-social-789',
+        id:15
+      },
+      {
+        title:
+          '¿Cómo considera usted que es la atención recibida en su centro de atención médica?',
+        options: ['Excelente', 'Muy buena', 'Buena', 'Regular', 'Mala'],
+        questionType: 'radioButton',
+        questionID: 'atencion-recibida-123',
+        id:16
+      },
+    ],
+    questionCuscoID: 2,}
 ];
 
 export const columns = [

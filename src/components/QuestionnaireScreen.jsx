@@ -10,7 +10,7 @@ import {
 import {QuestionnaireStyles as styles, PickerStyles} from '../styles/styles';
 import {RadioButton, TextInput as PaperTextInput} from 'react-native-paper';
 import {requestExternalStoragePermission} from '../assets/permissions';
-import {prueba as questions} from '../database/preguntasCuscoDB';
+import {preguntasCusco as questions} from '../database/preguntasCuscoDB';
 import {
   handleSaveDataStorage,
   handleSaveCloudFirestore,
@@ -60,7 +60,30 @@ export const QuestionnaireScreen = ({
       ...selectedOptions,
       [questionID]: index,
     });
+    console.log(selectedOptions);
   };
+  // Función para obtener las respuestas ordenadas
+  const getOrderedResponses = () => {
+    const orderedResponses = {};
+
+    // Obtiene las claves (questionID) del objeto selectedOptions
+    const keys = Object.keys(selectedOptions);
+
+    // Ordena las claves (questionID) según el número de pregunta (id)
+    keys.sort((a, b) => {
+      const idA = parseInt(a); // Convierte la clave a número entero
+      const idB = parseInt(b); // Convierte la clave a número entero
+      return idA - idB;
+    });
+
+    // Construye un nuevo objeto ordenado según el número de pregunta
+    keys.forEach(key => {
+      orderedResponses[key] = selectedOptions[key];
+    });
+
+    return orderedResponses;
+  };
+
 
   const checkAllOptionsSelected = () => {
     const allQuestionsAnswered = questions.every(section =>
@@ -141,7 +164,9 @@ export const QuestionnaireScreen = ({
                 <View
                   key={question.questionID}
                   style={styles.questionContainer}>
-                  <Text style={styles.questionTitle}>{question.title}</Text>
+                  <Text style={styles.questionTitle}>
+                    {question.id} {question.title}
+                  </Text>
                   {question.questionType === 'numberInput' ? (
                     <PaperTextInput
                       label={question.title}

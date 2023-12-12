@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import {BarChart} from 'react-native-chart-kit';
 import {handleGetData} from '../assets/questionnaireFunctions';
-import {prueba as preguntas} from '../database/preguntasCuscoDB';
+import {preguntasCusco as preguntas} from '../database/preguntasCuscoDB';
 
 import ViewShot from 'react-native-view-shot';
 import RNFS from 'react-native-fs';
@@ -35,55 +35,57 @@ export const GraficaScreen = () => {
 
   const procesarRespuestas = async respuestas => {
     if (respuestas && respuestas.length >= 1) {
-      const preguntasAProcesar = preguntas[0].questions;
       const dataProcesada = [];
-
-      for (const pregunta of preguntasAProcesar) {
-        if (pregunta.questionType === 'numberInput') {
-          const respuestasPregunta = {};
-          const intervalos = [0, 10, 20, 30, 40];
-
-          respuestas.forEach(respuesta => {
-            const valorRespuesta = respuesta[pregunta.questionID];
-            for (let i = 0; i < intervalos.length - 1; i++) {
-              if (
-                valorRespuesta >= intervalos[i] &&
-                valorRespuesta < intervalos[i + 1]
-              ) {
-                const rangoIntervalo = `${intervalos[i]}-${intervalos[i + 1]}`;
-                if (!respuestasPregunta.hasOwnProperty(rangoIntervalo)) {
-                  respuestasPregunta[rangoIntervalo] = 0;
+      for(let i =0; i < preguntas.length; i++){
+        const preguntasAProcesar = preguntas[i].questions;
+        for (const pregunta of preguntasAProcesar) {
+          if (pregunta.questionType === 'numberInput') {
+            const respuestasPregunta = {};
+            const intervalos = [0, 10, 20, 30, 40];
+  
+            respuestas.forEach(respuesta => {
+              const valorRespuesta = respuesta[pregunta.questionID];
+              for (let i = 0; i < intervalos.length - 1; i++) {
+                if (
+                  valorRespuesta >= intervalos[i] &&
+                  valorRespuesta < intervalos[i + 1]
+                ) {
+                  const rangoIntervalo = `${intervalos[i]}-${intervalos[i + 1]}`;
+                  if (!respuestasPregunta.hasOwnProperty(rangoIntervalo)) {
+                    respuestasPregunta[rangoIntervalo] = 0;
+                  }
+                  respuestasPregunta[rangoIntervalo]++;
+                  break;
                 }
-                respuestasPregunta[rangoIntervalo]++;
-                break;
               }
-            }
-          });
-
-          dataProcesada.push({
-            pregunta: pregunta.title,
-            respuestas: respuestasPregunta,
-          });
-        } else if (pregunta.questionType === 'radioButton') {
-          const respuestasPregunta = {};
-
-          pregunta.options.forEach(opcion => {
-            respuestasPregunta[opcion] = 0;
-          });
-
-          respuestas.forEach(respuesta => {
-            const respuestaPregunta = respuesta[pregunta.questionID];
-            if (respuestasPregunta.hasOwnProperty(respuestaPregunta)) {
-              respuestasPregunta[respuestaPregunta]++;
-            }
-          });
-
-          dataProcesada.push({
-            pregunta: pregunta.title,
-            respuestas: respuestasPregunta,
-          });
+            });
+  
+            dataProcesada.push({
+              pregunta: pregunta.title,
+              respuestas: respuestasPregunta,
+            });
+          } else if (pregunta.questionType === 'radioButton') {
+            const respuestasPregunta = {};
+  
+            pregunta.options.forEach(opcion => {
+              respuestasPregunta[opcion] = 0;
+            });
+  
+            respuestas.forEach(respuesta => {
+              const respuestaPregunta = respuesta[pregunta.questionID];
+              if (respuestasPregunta.hasOwnProperty(respuestaPregunta)) {
+                respuestasPregunta[respuestaPregunta]++;
+              }
+            });
+  
+            dataProcesada.push({
+              pregunta: pregunta.title,
+              respuestas: respuestasPregunta,
+            });
+          }
         }
       }
+      
 
       setDataGraficas(dataProcesada);
       setIsLoading(false);
@@ -153,8 +155,7 @@ export const GraficaScreen = () => {
                       textAlign: 'center',
                       color: 'black',
                       fontWeight: 'bold',
-                      marginTop: 10,
-                      marginBottom: 10,
+                      padding: 10
                       
                     }}>
                     {pregunta.pregunta}
