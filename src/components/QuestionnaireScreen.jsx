@@ -43,19 +43,17 @@ export const QuestionnaireScreen = ({
   }, [selectedOptions]);
 
   const permissions = async () => {
-    const permissionsStatus = await requestExternalStoragePermission();
-    if (permissionsStatus)
-      handleSaveCloudFirestore(
-        selectedYear,
-        setMeterNumber,
-        meterNumber,
-        questionnaireNumber,
-        setStatus,
-        questions,
-        selectedOptions,
-        setSelectedOptions,
-        setUserResponses,
-      );
+    handleSaveCloudFirestore(
+      selectedYear,
+      setMeterNumber,
+      meterNumber,
+      questionnaireNumber,
+      setStatus,
+      questions,
+      selectedOptions,
+      setSelectedOptions,
+      setUserResponses,
+    );
   };
   const handleOptionSelect = (questionID, index) => {
     setSelectedOptions({
@@ -120,7 +118,9 @@ export const QuestionnaireScreen = ({
               {/* Contenedor del picker */}
               <View style={PickerStyles.container}>
                 <View style={PickerStyles.pickerContainer}>
-                  <Text style={PickerStyles.label}>Selecciona el año de la encuesta:</Text>
+                  <Text style={PickerStyles.label}>
+                    Selecciona el año de la encuesta:
+                  </Text>
                   <Picker
                     selectedValue={selectedYear}
                     style={PickerStyles.picker}
