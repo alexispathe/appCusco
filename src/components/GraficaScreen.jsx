@@ -143,17 +143,20 @@ export const GraficaScreen = () => {
         <ViewShot
           ref={ref}
           options={{fileName: 'graficas', format: 'jpg', quality: 0.9}}>
-          <View style={{flex: 1}}>
+          <View style={{flex: 1, backgroundColor: 'white'}}>
             {isLoading ? (
               <ActivityIndicator size="large" color="#2979FF" />
             ) : (
               dataGraficas.map((pregunta, index) => (
-                <View key={index} style={{height: 300}}>
+                <View key={index} style={{height: 260}}>
                   <Text
                     style={{
                       textAlign: 'center',
                       color: 'black',
                       fontWeight: 'bold',
+                      marginTop: 10,
+                      marginBottom: 10,
+                      
                     }}>
                     {pregunta.pregunta}
                   </Text>
