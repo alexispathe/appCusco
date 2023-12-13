@@ -6,14 +6,14 @@ export const preguntasCusco = [
         title: '¿Cuál es su edad en años cumplidos hasta el día de hoy?',
         options: [],
         questionType: 'numberInput',
-        questionID: 'edad-actual-123',
+        questionID: 'Edad',
         id:1,
       },
       {
         title: '¿Cuál es su sexo?',
         options: ['Hombre', 'Mujer'],
         questionType: 'radioButton',
-        questionID: 'cual-es-su-sexo-123',
+        questionID: 'Sexo',
         id:2,
       },
       {
@@ -26,7 +26,7 @@ export const preguntasCusco = [
           'Unión libre',
         ],
         questionType: 'radioButton',
-        questionID: 'estado-civil-123',
+        questionID: 'Edo_Civil',
         id:3,
       },
       {
@@ -43,7 +43,7 @@ export const preguntasCusco = [
           'Losa de concreto o viguetas con bovedilla',
         ],
         questionType: 'radioButton',
-        questionID: 'material-techo-456',
+        questionID: 'Techo_Vivienda',
         id:4,
       },
       {
@@ -61,7 +61,7 @@ export const preguntasCusco = [
           'No especificado',
         ],
         questionType: 'radioButton',
-        questionID: 'material-paredes-789',
+        questionID: 'Paredes_Muros_Vivienda',
         id:5,
       },
       {
@@ -74,7 +74,7 @@ export const preguntasCusco = [
           'No especificado',
         ],
         questionType: 'radioButton',
-        questionID: 'material-piso-012',
+        questionID:  'Pisos_Vivienda',
         id:6,
       },
       {
@@ -89,21 +89,21 @@ export const preguntasCusco = [
           '¿No cocinan?',
         ],
         questionType: 'radioButton',
-        questionID: 'combustible-cocinar-345',
+        questionID: 'Combustible_Para_Cocinar',
         id:7
       },
       {
         title: '¿Hay luz eléctrica en esta vivienda?',
         options: ['Sí', 'No'],
         questionType: 'radioButton',
-        questionID: 'luz-electrica-678',
+        questionID: 'Luz_Electrica',
         id: 8
       },
       {
         title: '¿Esta vivienda tiene agua entubada?',
         options: ['Sí', 'No'],
         questionType: 'radioButton',
-        questionID: 'agua-entubada-901',
+        questionID: 'Agua_Entubada',
         id: 9,
       },
       {
@@ -117,7 +117,7 @@ export const preguntasCusco = [
           'No especificado',
         ],
         questionType: 'radioButton',
-        questionID: 'drenaje-234',
+        questionID:  'Drenaje_Vivienda',
         id: 10
       },
       {
@@ -134,7 +134,7 @@ export const preguntasCusco = [
           'No especificado',
         ],
         questionType: 'radioButton',
-        questionID: 'basura-vivienda-567',
+        questionID: 'Basura_Vivienda',
         id: 11
       },
       {
@@ -151,7 +151,7 @@ export const preguntasCusco = [
           'Doctorado',
         ],
         questionType: 'radioButton',
-        questionID: 'grado-aprobado-890',
+        questionID: 'Grado_Estudios',
         id: 12
       },
     ],
@@ -161,10 +161,17 @@ export const preguntasCusco = [
     title: 'Autopercepción de Salud  y Prevención',
     questions: [
       {
-        title: '¿Cómo considera usted que es su estado de salud actual?',
-        options: ['Excelente', 'Muy bueno', 'Bueno', 'Regular', 'Malo'],
+        title:
+          ' ¿Cómo considera usted que es su estado de salud actual?',
+        options: [
+          'Excelente',
+          'Muy bueno',
+          'Bueno',
+          'Regular',
+          'Malo',
+        ],
         questionType: 'radioButton',
-        questionID: 'salud-actual-231',
+        questionID: 'Edo_Salud',
         id:13
       },
       {
@@ -181,14 +188,14 @@ export const preguntasCusco = [
           'Otro',
         ],
         questionType: 'radioButton',
-        questionID: 'donde-atiende-salud-456',
+        questionID: 'Problemas_Salud_Atencion',
         id:14
       },
       {
         title: '¿Con qué tipo de seguridad social cuenta?',
         options: ['IMSS', 'ISSSTE', 'INSABI', 'Privado', 'Ninguno'],
         questionType: 'radioButton',
-        questionID: 'seguridad-social-789',
+        questionID: 'Seguro_Social',
         id:15
       },
       {
@@ -196,7 +203,7 @@ export const preguntasCusco = [
           '¿Cómo considera usted que es la atención recibida en su centro de atención médica?',
         options: ['Excelente', 'Muy buena', 'Buena', 'Regular', 'Mala'],
         questionType: 'radioButton',
-        questionID: 'atencion-recibida-123',
+        questionID: 'Atención_Medica',
         id:16
       },
       {
@@ -204,7 +211,7 @@ export const preguntasCusco = [
           'En los últimos seis meses ¿usted acudió a revisión médica preventiva?',
         options: ['Sí', 'No'],
         questionType: 'radioButton',
-        questionID: 'revision-preventiva-987',
+        questionID: 'Revision_Preventiva',
         id:17
       },
       {
@@ -212,7 +219,7 @@ export const preguntasCusco = [
           'En los últimos seis meses, ¿usted solicitó ser atendido(a) por algún profesional de salud o centro sanitario debido a un problema de salud, enfermedad, control de la misma, lesión o accidente?',
         options: ['Sí', 'No'],
         questionType: 'radioButton',
-        questionID: 'solicitud-atencion-salud-654',
+        questionID: 'Solicitud_Atención_Salud',
         id:18
       },
       {
@@ -267,14 +274,14 @@ export const preguntasCusco = [
           'No sabe',
         ],
         questionType: 'radioButton',
-        questionID: 'motivo-atencion-medica-321',
+        questionID: 'Necesidad_Atención',
         id:19
       },
       {
         title: '¿Cuenta usted con cartilla nacional de vacunación actualizada?',
         options: ['Sí', 'No'],
         questionType: 'radioButton',
-        questionID: 'cartilla-vacunacion-555',
+        questionID: 'Cartilla_Actualizada',
         id:20
       },
       {
@@ -282,7 +289,7 @@ export const preguntasCusco = [
           'En los últimos 10 años ¿Le han aplicado la vacuna contra el Tétanos?',
         options: ['Sí', 'No', 'No sabe / No recuerda'],
         questionType: 'radioButton',
-        questionID: 'vacuna-tetanos-777',
+        questionID:  'Vacuna_Tetanos',
         id:21
       },
       {
@@ -290,14 +297,14 @@ export const preguntasCusco = [
           'En el último año ¿Le han aplicado la vacuna contra la Influenza?',
         options: ['Sí', 'No', 'No sabe / No recuerda'],
         questionType: 'radioButton',
-        questionID: 'vacuna-influenza-888',
+        questionID: 'Vacuna_Influenza',
         id:22
       },
       {
         title: '¿Le han aplicado la vacuna contra COVID-19?',
         options: ['Sí', 'No'],
         questionType: 'radioButton',
-        questionID: 'vacuna-covid19-999',
+        questionID: 'Vacuna_COVID',
         id:23
       },
       {
@@ -310,7 +317,7 @@ export const preguntasCusco = [
           'Todo el tiempo o la mayoría del tiempo',
         ],
         questionType: 'radioButton',
-        questionID: 'uso-cinturon-casco-111',
+        questionID: 'Proteccion_Vehiculo',
         id:24
       },
       {
@@ -323,7 +330,7 @@ export const preguntasCusco = [
           'Todo el tiempo o la mayoría del tiempo',
         ],
         questionType: 'radioButton',
-        questionID: 'actividad-fisica-mes-222',
+        questionID: 'Actividad_Fisica',
         id:25
       },
       {
@@ -331,7 +338,7 @@ export const preguntasCusco = [
           'Durante las dos últimas semanas ¿Ha realizado alguna actividad física en su tiempo libre como hacer deporte, correr, nadar, andar en bicicleta, hacer gimnasia etc?',
         options: ['Sí', 'No'],
         questionType: 'radioButton',
-        questionID: 'actividad-fisica-tiempo-libre-333',
+        questionID: 'Ejemplos_Actividades_Físicas',
         id:26
       },
     ],
@@ -345,22 +352,15 @@ export const preguntasCusco = [
         title: 'Aproximadamente ¿Cuánto pesa sin zapatos? Kg',
         options: [],
         questionType: 'numberInput',
-        questionID: 'peso-sin-zapatos-413',
+        questionID:  'Peso_Aprox',
         id:27
       },
       {
         title: 'Aproximadamente ¿Cuánto mide sin zapatos? M',
         options: [],
         questionType: 'numberInput',
-        questionID: 'peso-sin-zapatos-043',
+        questionID: 'Medicion_Aprox',
         id:28
-      },
-      {
-        title: '¿Cómo considera usted que es su estado de salud actual?',
-        options: ['Excelente', 'Muy bueno', 'Bueno', 'Regular', 'Malo'],
-        questionType: 'radioButton',
-        questionID: 'salud-actual-231',
-        id:29
       },
       {
         title: '¿Considera que su peso actual es...?',
@@ -371,8 +371,8 @@ export const preguntasCusco = [
           'No sabe',
         ],
         questionType: 'radioButton',
-        questionID: 'peso-actual-232',
-        id:30
+        questionID: 'Peso_Consideracion',
+        id:29
       },
       {
         title:
@@ -384,8 +384,8 @@ export const preguntasCusco = [
           'Siempre',
         ],
         questionType: 'radioButton',
-        questionID: 'limitaciones-actividades-233',
-        id:31
+        questionID: 'Limitacion_Actividades',
+        id:30
       },
       {
         title:
@@ -397,14 +397,15 @@ export const preguntasCusco = [
           'Todo el tiempo o la mayoría del tiempo (5-7 días)',
         ],
         questionType: 'radioButton',
-        questionID: 'esfuerzo-actividades-234',
-        id:32
+        questionID:'Esfuerzo',
+        id:31
       },
       {
         title: '¿Usted puede caminar más de seis minutos sin sentir fatiga?',
         options: ['Sí', 'No'],
         questionType: 'radioButton',
-        questionID: 'caminar-fatiga-235',
+        questionID: 'Fatiga',
+        id:32
       },
       {
         title:
@@ -416,7 +417,7 @@ export const preguntasCusco = [
           'Hace más de un año',
         ],
         questionType: 'radioButton',
-        questionID: 'azucar-sangre-236',
+        questionID: 'Medico_Azucar',
         id:33
       },
       {
@@ -424,7 +425,7 @@ export const preguntasCusco = [
           '¿Algún médico le ha dicho que tiene diabetes (o alta el azúcar en la sangre)?',
         options: ['Sí', 'Sí, durante el embarazo (Diabetes gestacional)', 'No'],
         questionType: 'radioButton',
-        questionID: 'diabetes-diagnostico-237',
+        questionID: 'Medico_Diabetes',
         id:34
       },
       {
@@ -437,14 +438,14 @@ export const preguntasCusco = [
           'Hace más de un año',
         ],
         questionType: 'radioButton',
-        questionID: 'tension-arterial-238',
+        questionID: 'Medico_Tension_Arterial',
         id:35
       },
       {
         title: '¿Algún médico le ha dicho que tiene la presión alta?',
         options: ['Sí', 'No'],
         questionType: 'radioButton',
-        questionID: 'presion-alta-diagnostico-239',
+        questionID: 'Medico_Presion_Alta',
         id:36
       },
       {
@@ -452,7 +453,7 @@ export const preguntasCusco = [
           '¿Ha tenido alguna vez un dolor fuerte en el pecho, sudoración, con falta de aire o gran malestar que durara media hora o más?',
         options: ['Sí', 'No'],
         questionType: 'radioButton',
-        questionID: 'dolor-pecho-240',
+        questionID: 'Dolor_Aprox',
         id:37
       },
       {
@@ -460,7 +461,7 @@ export const preguntasCusco = [
           '¿Alguna vez un médico le ha dicho que padece de alguna enfermedad del riñón, como… infección de vías urinarias en más de una ocasión?',
         options: ['Sí', 'No'],
         questionType: 'radioButton',
-        questionID: 'enfermedad-rinon-241',
+        questionID: 'Medico_Salud',
         id:38
       },
       {
@@ -473,14 +474,14 @@ export const preguntasCusco = [
           'Hace más de un año',
         ],
         questionType: 'radioButton',
-        questionID: 'colesterol-analisis-242',
+        questionID: 'Análisis_Colesterol',
         id:39
       },
       {
         title: '¿Algún médico le ha dicho que tiene el colesterol alto?',
         options: ['Sí', 'No'],
         questionType: 'radioButton',
-        questionID: 'colesterol-alto-diagnostico-243',
+        questionID: 'Colesterol_Alto',
         id:40
       },
       {
@@ -493,14 +494,14 @@ export const preguntasCusco = [
           'Hace más de un año',
         ],
         questionType: 'radioButton',
-        questionID: 'trigliceridos-analisis-244',
+        questionID: 'Análisis_Trigliceridos',
         id:41
       },
       {
         title: '¿Algún médico le ha dicho que tiene los triglicéridos altos?',
         options: ['Sí', 'No'],
         questionType: 'radioButton',
-        questionID: 'trigliceridos-altos-diagnostico-245',
+        questionID:'Triglicéridos_Altos',
         id:42
       },
       {
@@ -508,7 +509,7 @@ export const preguntasCusco = [
           'En los últimos 12 meses, ¿sufrió usted algún daño a su salud a causa de un accidente?',
         options: ['Sí', 'No'],
         questionType: 'radioButton',
-        questionID: 'daño-salud-accidente-246',
+        questionID: 'Daño_Accidente',
         id:43
       },
       {
@@ -516,14 +517,14 @@ export const preguntasCusco = [
           '¿Usa anteojos o lentes de contacto? Incluya el uso de anteojos para leer.',
         options: ['Sí', 'No'],
         questionType: 'radioButton',
-        questionID: 'uso-anteojos-247',
+        questionID: 'Anteojos_Leer',
         id:44
       },
       {
         title: '¿Usa una prótesis auditiva?',
         options: ['Sí', 'No'],
         questionType: 'radioButton',
-        questionID: 'protesis-auditiva-248',
+        questionID: 'Prótesis_Auditiva',
         id:45
       },
       {
@@ -531,7 +532,7 @@ export const preguntasCusco = [
           '¿Tuvo dolor en alguna parte del cuerpo durante las 4 últimas semanas?',
         options: ['Nada', 'Un poco', 'Regular', 'Bastante', 'Mucho'],
         questionType: 'radioButton',
-        questionID: 'dolor-corporal-249',
+        questionID: 'Dolor_Cuerpo',
         id:46
       },
     ],
@@ -540,19 +541,13 @@ export const preguntasCusco = [
   {
     title: 'Salud Mental',
     questions: [
-      {
-        title: '¿Cómo considera usted que es su estado de salud actual?',
-        options: ['Excelente', 'Muy bueno', 'Bueno', 'Regular', 'Malo'],
-        questionType: 'radioButton',
-        questionID: 'salud-actual-231',
-        id:47
-      },
+      
       {
         title: '¿Alguna vez ha pensado en suicidarse?',
         options: ['Sí', 'No', 'No responde'],
         questionType: 'radioButton',
-        questionID: 'pensamientos-suicidas-232',
-        id:48
+        questionID: 'Pensamiento_Suicidio',
+        id:47
       },
       {
         title:
@@ -564,8 +559,8 @@ export const preguntasCusco = [
           'Todo el tiempo o la mayoría del tiempo (5-7 días)',
         ],
         questionType: 'radioButton',
-        questionID: 'sentimiento-nerviosismo-233',
-        id:49
+        questionID: 'Semana_Nervioso',
+        id:48
       },
       {
         title:
@@ -577,8 +572,8 @@ export const preguntasCusco = [
           'Todo el tiempo o la mayoría del tiempo (5-7 días)',
         ],
         questionType: 'radioButton',
-        questionID: 'dificultad-concentracion-234',
-        id:50
+        questionID: 'Concentrarse_Semana',
+        id:49
       },
       {
         title: 'Durante la última semana...¿se sintió triste o deprimido(a)?',
@@ -589,8 +584,8 @@ export const preguntasCusco = [
           'Todo el tiempo o la mayoría del tiempo (5-7 días)',
         ],
         questionType: 'radioButton',
-        questionID: 'sentimiento-tristeza-depresion-235',
-        id:51
+        questionID: 'Triste_Deprimido',
+        id:50
       },
       {
         title: 'Durante la última semana...¿no durmió bien?',
@@ -601,15 +596,15 @@ export const preguntasCusco = [
           'Todo el tiempo o la mayoría del tiempo (5-7 días)',
         ],
         questionType: 'radioButton',
-        questionID: 'problemas-sueño-236',
-        id:52
+        questionID: 'Semana_Sueño',
+        id:51
       },
       {
         title: 'Regularmente, ¿Cuántas horas duerme diariamente?',
         options: [],
         questionType: 'numberInput',
-        questionID: 'horas-sueno-diarias-237',
-        id:53
+        questionID: 'Tiempo_Promedio_Sueño',
+        id:52
       },
       {
         title: 'Durante la última semana... ¿disfrutó de la vida?',
@@ -620,8 +615,8 @@ export const preguntasCusco = [
           'Todo el tiempo o la mayoría del tiempo (5-7 días)',
         ],
         questionType: 'radioButton',
-        questionID: 'disfrute-de-la-vida-238',
-        id:54
+        questionID: 'Disfrutar_Vida',
+        id:53
       },
     ],
     questionCuscoID: 4,
@@ -630,27 +625,20 @@ export const preguntasCusco = [
     title: 'Salud Social',
     questions: [
       {
-        title: '¿Cómo considera usted que es su estado de salud actual?',
-        options: ['Excelente', 'Muy bueno', 'Bueno', 'Regular', 'Malo'],
-        questionType: 'radioButton',
-        questionID: 'salud-actual-231',
-        id:55
-      },
-      {
         title:
           'En los últimos 12 meses, ¿sufrió usted algún daño a su salud por robo, agresión o violencia?',
         options: ['Sí', 'No', 'No responde'],
         questionType: 'radioButton',
-        questionID: 'danio-salud-agresion-232',
-        id:56
+        questionID: 'Daño_Salud_Agresiones',
+        id:54
       },
       {
         title:
           '¿Ha fumado usted por lo menos 100 cigarrillos (5 cajetillas) de tabaco durante toda su vida?',
         options: ['Sí', 'No', 'No sabe / No responde'],
         questionType: 'radioButton',
-        questionID: 'fumador-vida-233',
-        id:57
+        questionID: 'Consumo_Promedio_Cajetillas',
+        id:55
       },
       {
         title: 'Actualmente ¿Fuma tabaco...',
@@ -661,51 +649,51 @@ export const preguntasCusco = [
           'No responde',
         ],
         questionType: 'radioButton',
-        questionID: 'fumador-actual-234',
-        id:58
+        questionID: 'Consumo_Tabaco',
+        id:56
       },
       {
         title: 'En promedio, ¿cuántos cigarros fuma actualmente por día?',
         options: [],
         questionType: 'numberInput',
-        questionID: 'promedio-cigarros-dia-235',
-        id:59
+        questionID: 'Promedio_Consumo_Cigarro',
+        id:57
       },
       {
         title: '¿Actualmente toma bebidas alcohólicas?',
         options: ['Sí', 'No', 'Nunca ha tomado'],
         questionType: 'radioButton',
-        questionID: 'toma-alcohol-236',
-        id:60
+        questionID: 'Consumo_Bebida_Alcoholica',
+        id:58
       },
       {
         title: 'Aproximadamente, ¿con qué frecuencia toma bebidas alcohólicas?',
         options: ['Diario', 'Semanal', 'Mensual', 'Ocasional', 'No responde'],
         questionType: 'radioButton',
-        questionID: 'frecuencia-alcohol-237',
-        id:61
+        questionID: 'Frecuencia_Consumo_Alcohol',
+        id:59
       },
       {
         title: 'En promedio, ¿cuántas copas toma por ocasión?',
         options: [],
         questionType: 'numberInput',
-        questionID: 'promedio-copas-ocasion-238',
-        id:62
+        questionID: 'Promedio_Consumo_Copas',
+        id:60
       },
       {
         title: 'En promedio, ¿cuántas horas trabaja diariamente?',
         options: [],
         questionType: 'numberInput',
-        questionID: 'horas-trabajo-diarias-239',
-        id:63
+        questionID: 'Horas_Trabajo_Diario',
+        id:61
       },
       {
         title:
           'Durante las 4 últimas semanas, ¿hasta qué punto su salud física o los problemas emocionales han dificultado sus actividades sociales habituales con la familia, los amigos, los vecinos u otras personas?',
         options: ['Nada', 'Un poco', 'Regular', 'Bastante', 'Mucho'],
         questionType: 'radioButton',
-        questionID: 'dificultad-actividades-sociales-240',
-        id:64
+        questionID: 'Estado_Salud_Dificultad_Actividades',
+        id:62
       },
       {
         title: '¿Cómo piensa que es su vida social?',
@@ -716,8 +704,8 @@ export const preguntasCusco = [
           'Nada satisfactoria',
         ],
         questionType: 'radioButton',
-        questionID: 'vida-social-241',
-        id:65
+        questionID: 'Vida_Social',
+        id:63
       },
       {
         title:
@@ -730,8 +718,8 @@ export const preguntasCusco = [
           'Muchas veces',
         ],
         questionType: 'radioButton',
-        questionID: 'invitaciones-salir-242',
-        id:66
+        questionID: 'Salir_Distraerse_Invitación',
+        id:64
       },
       {
         title: 'Durante las 4 últimas semanas, ¿Ha recibido amor o afecto?',
@@ -743,8 +731,8 @@ export const preguntasCusco = [
           'Muchas veces',
         ],
         questionType: 'radioButton',
-        questionID: 'recibido-amor-afecto-243',
-        id:67
+        questionID: 'Recibir_Amor_Efecto',
+        id:65
       },
       {
         title:
@@ -757,8 +745,8 @@ export const preguntasCusco = [
           'Muchas veces',
         ],
         questionType: 'radioButton',
-        questionID: 'hablar-problemas-personales-244',
-        id:68
+        questionID:  'Hablar_Problemas',
+        id:66
       },
       {
         title:
@@ -771,8 +759,8 @@ export const preguntasCusco = [
           'Muchas veces',
         ],
         questionType: 'radioButton',
-        questionID: 'personas-preocupadas-245',
-        id:69
+        questionID: 'Personas_Preocupación',
+        id:67
       },
       {
         title:
@@ -785,8 +773,8 @@ export const preguntasCusco = [
           'Muchas veces',
         ],
         questionType: 'radioButton',
-        questionID: 'consejos-utiles-246',
-        id:70
+        questionID: 'Consejos_Útiles',
+        id:68
       },
       {
         title:
@@ -799,8 +787,8 @@ export const preguntasCusco = [
           'Muchas veces',
         ],
         questionType: 'radioButton',
-        questionID: 'ayuda-enfermedad-cama-247',
-        id:71
+        questionID: 'Ayuda_Enfermedad',
+        id:69
       },
     ],
     questionCuscoID: 5,
@@ -815,15 +803,15 @@ export const prueba = [
         title: '¿Cuál es su edad en años cumplidos hasta el día de hoy?',
         options: [],
         questionType: 'numberInput',
-        questionID: 'edad-actual-123',
-        id: 1
+        questionID: 'Edad',
+        id:1,
       },
       {
         title: '¿Cuál es su sexo?',
         options: ['Hombre', 'Mujer'],
         questionType: 'radioButton',
-        questionID: 'cual-es-su-sexo-123',
-        id: 2
+        questionID: 'Sexo',
+        id:2,
       },
       {
         title: '¿Cuál es su estado civil?',
@@ -835,56 +823,137 @@ export const prueba = [
           'Unión libre',
         ],
         questionType: 'radioButton',
-        questionID: 'estado-civil-123',
-        id: 3
+        questionID: 'Edo_Cjvj,',
+        id:3,
+      },
+      {
+        title: '¿De qué material es la mayor parte del techo de esta vivienda?',
+        options: [
+          'Material de desecho',
+          'Lámina de cartón',
+          'Lámina metálica',
+          'Lámina de asbesto',
+          'Palma o paja',
+          'Madera o tejamanil',
+          'Terrado con viguería',
+          'Teja',
+          'Losa de concreto o viguetas con bovedilla',
+        ],
+        questionType: 'radioButton',
+        questionID: 'Techo_Vivienda',
+        id:4,
+      },
+      {
+        title:
+          '¿De qué material es la mayor parte de las paredes o muros de esta vivienda?',
+        options: [
+          'Material de desecho',
+          'Lámina de cartón',
+          'Lámina de asbesto o metálica',
+          'Carrizo, bambú o palma',
+          'Embarro, bajareque o paja',
+          'Madera',
+          'Adobe',
+          'Tabique, ladrillo, block, piedra, cantera, cemento o concreto',
+          'No especificado',
+        ],
+        questionType: 'radioButton',
+        questionID: 'Paredes_Muros_Vivienda',
+        id:5,
+      },
+      {
+        title: '¿De qué material es la mayor parte del piso de esta vivienda?',
+        options: [
+          'Tierra',
+          'Cemento o Firme',
+          'Madera',
+          'mosaico u otro recubrimiento',
+          'No especificado',
+        ],
+        questionType: 'radioButton',
+        questionID:  'Pisos_Vivienda',
+        id:6,
+      },
+      {
+        title: '¿Cuál es el combustible que más usan para cocinar?',
+        options: [
+          'Leña',
+          'Carbón',
+          'Gas de cilindro o estacionario',
+          'Gas natural o de tubería',
+          'Electricidad',
+          '¿Otro combustible?',
+          '¿No cocinan?',
+        ],
+        questionType: 'radioButton',
+        questionID: 'Combustible_Para_Cocinar',
+        id:7
+      },
+      {
+        title: '¿Hay luz eléctrica en esta vivienda?',
+        options: ['Sí', 'No'],
+        questionType: 'radioButton',
+        questionID: 'Luz_Electrica',
+        id: 8
+      },
+      {
+        title: '¿Esta vivienda tiene agua entubada?',
+        options: ['Sí', 'No'],
+        questionType: 'radioButton',
+        questionID: 'Agua_Entubada',
+        id: 9,
+      },
+      {
+        title: '¿Esta vivienda tiene drenaje o desagüe conectado a:',
+        options: [
+          'la red pública?',
+          '¿una fosa séptica o tanque séptico (biodigestor)?',
+          '¿una tubería que va a dar a una barranca o grieta?',
+          '¿una tubería que va a dar a un río, lago o mar?',
+          '¿No tiene drenaje?',
+          'No especificado',
+        ],
+        questionType: 'radioButton',
+        questionID:  'Drenaje_Vivienda',
+        id: 10
+      },
+      {
+        title: '¿La basura de esta vivienda:',
+        options: [
+          '¿la recoge un camión o carrito de basura?',
+          '¿la tiran en el basurero público?',
+          '¿la tiran en un contenedor o depósito?',
+          '¿la queman?',
+          '¿la entierran?',
+          '¿la tiran en un terreno baldío o calle?',
+          '¿la tiran a la barranca o grieta?',
+          '¿la tiran al rio, lago o mar?',
+          'No especificado',
+        ],
+        questionType: 'radioButton',
+        questionID: 'Basura_Vivienda',
+        id: 11
+      },
+      {
+        title: '¿Cuál es el último año o grado que aprobó usted en la escuela?',
+        options: [
+          'Ninguno',
+          'Preescolar',
+          'Primaria',
+          'Secundaria',
+          'Preparatoria o bachillerato',
+          'Carrera Tecnica o Comercial',
+          'Licenciatura o Ingenieria',
+          'Maestria',
+          'Doctorado',
+        ],
+        questionType: 'radioButton',
+        questionID: 'Grado_Estudios',
+        id: 12
       },
     ],
     questionCuscoID: 1,
   },
-  {
-    title: 'Autopercepción de Salud  y Prevención',
-    questions: [
-      {
-        title: '¿Cómo considera usted que es su estado de salud actual?',
-        options: ['Excelente', 'Muy bueno', 'Bueno', 'Regular', 'Malo'],
-        questionType: 'radioButton',
-        questionID: 'salud-actual-231',
-        id:13
-      },
-      {
-        title:
-          'Cuando usted tiene problemas de salud ¿En dónde se atiende usualmente?',
-        options: [
-          'IMSS',
-          'ISSSTE',
-          'INSABI',
-          'Consultorio',
-          'Clínica u Hospital Privado',
-          'Se Automedica',
-          'No se atiende',
-          'Otro',
-        ],
-        questionType: 'radioButton',
-        questionID: 'donde-atiende-salud-456',
-        id:14
-      },
-      {
-        title: '¿Con qué tipo de seguridad social cuenta?',
-        options: ['IMSS', 'ISSSTE', 'INSABI', 'Privado', 'Ninguno'],
-        questionType: 'radioButton',
-        questionID: 'seguridad-social-789',
-        id:15
-      },
-      {
-        title:
-          '¿Cómo considera usted que es la atención recibida en su centro de atención médica?',
-        options: ['Excelente', 'Muy buena', 'Buena', 'Regular', 'Mala'],
-        questionType: 'radioButton',
-        questionID: 'atencion-recibida-123',
-        id:16
-      },
-    ],
-    questionCuscoID: 2,}
 ];
 
 export const columns = [

@@ -11,7 +11,8 @@ export const FileDownloaderScreen = () => {
   const [selectedYear, setSelectedYear] = useState('2023'); // Año seleccionado por defecto
   const handleSaveDataXlSXNumeric = async () => {
     try {
-      const permissions = await requestExternalStoragePermission();
+      // const permissions = await requestExternalStoragePermission();
+      const permissions = true;
       if (permissions) {
         const dataCloudFirestore = await handleGetData();
         const dataSurvey = dataCloudFirestore.filter(
@@ -19,14 +20,16 @@ export const FileDownloaderScreen = () => {
         );
         const valuesArray = [];
         dataSurvey.forEach((data, index) => {
-          const values = Object.values(data.results);
+          const values = Object.entries(data.results)
+            .sort((a, b) =>columns.indexOf(a[0]) -columns.indexOf(b[0]))
+            .map(entry => entry[1]);
+        
           values.unshift(index + 1);
           valuesArray.push(values);
         });
-
-        const filePath = `${RNFS.DownloadDirectoryPath}/cusco_numeric_${selectedYear}.xlsx`;
+        const filePath = `${RNFS.ExternalDirectoryPath}/archivos/cusco_numeric_${selectedYear}.xlsx`;
+        await RNFS.mkdir(`${RNFS.ExternalDirectoryPath}/archivos`);
         let workbook = null;
-
         if (await RNFS.exists(filePath)) {
           await RNFS.unlink(filePath); // Elimina el archivo existente
         }
@@ -69,14 +72,16 @@ export const FileDownloaderScreen = () => {
         data => data.dataType === 'written' && data.year == selectedYear,
       );
       const valuesArray = [];
+      console.log(dataSurvey)
       dataSurvey.forEach((data, index) => {
-        const values = Object.values(data.results);
-        // Agregar el índice al inicio del array de valores
+        const values = Object.entries(data.results)
+          .sort((a, b) =>columns.indexOf(a[0]) -columns.indexOf(b[0]))
+          .map((entry) => entry[1]);
         values.unshift(index + 1); // Se agrega +1 para que el índice comience en 1 en lugar de 0
         valuesArray.push(values);
       });
 
-      const filePath = `${RNFS.DownloadDirectoryPath}/cusco_string_${selectedYear}.xlsx`;
+      const filePath = `${RNFS.ExternalDirectoryPath}/archivos/cusco_string_${selectedYear}.xlsx`;
       let workbook = null;
 
       if (await RNFS.exists(filePath)) {
