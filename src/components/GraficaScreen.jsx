@@ -109,7 +109,7 @@ export const GraficaScreen = () => {
       ],
     };
   };
-  const handleCaptureAndSavePDF = async () => {
+  const handleCapture = async () => {
     try {
       if (!ref.current) return;
 
@@ -140,7 +140,7 @@ export const GraficaScreen = () => {
 
   return (
     <>
-      <ScrollView style={{flex: 1}}>
+      <ScrollView style={{flex: 1}} > 
         <ViewShot
           ref={ref}
           options={{fileName: 'graficas', format: 'jpg', quality: 0.9}}>
@@ -183,7 +183,7 @@ export const GraficaScreen = () => {
         </ViewShot>
       </ScrollView>
 
-      <Button title='Descargar graficas' onPress={handleCaptureAndSavePDF}/>
+      <Button title='Descargar graficas' onPress={handleCapture}/>
     </>
   );
 };

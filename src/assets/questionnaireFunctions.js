@@ -94,7 +94,7 @@ export const handleSaveCloudFirestore = async (selectedYear,setMeterNumber, mete
         setStatus(false);
 
     } catch (error) {
-        console.error('Error al guardar los datos:', error);
+        Alert.alert("Error", 'Error al guardar los datos:', error);
     }
 };
 export const handleSaveDataStorage = async (setMeterNumber, meterNumber, questionnaireNumber, setStatus, questions, selectedOptions, setSelectedOptions, setUserResponses) => {

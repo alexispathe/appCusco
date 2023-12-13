@@ -136,10 +136,7 @@ export const QuestionnaireScreen = ({
         </View>
       ) : (
         <>
-          {visibleQuestions.map((section, sectionIndex) => (
-            <View key={sectionIndex} style={PickerStyles.sectionContainer}>
-              {/* Contenedor del picker */}
-              <View style={PickerStyles.container}>
+         <View style={PickerStyles.container}>
                 <View style={PickerStyles.pickerContainer}>
                   <Text style={PickerStyles.label}>
                     Selecciona el año de la encuesta:
@@ -158,6 +155,10 @@ export const QuestionnaireScreen = ({
                   </Picker>
                 </View>
               </View>
+          {visibleQuestions.map((section, sectionIndex) => (
+            <View key={sectionIndex} style={PickerStyles.sectionContainer}>
+              {/* Contenedor del picker */}
+             
               {/* Fin del contenedor Picker */}
               <Text style={styles.sectionTitle}>{section.title}</Text>
               {section.questions.map((question, questionIndex) => (
