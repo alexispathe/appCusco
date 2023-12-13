@@ -137,7 +137,7 @@ export const GraficaScreen = () => {
               <ActivityIndicator size="large" color="#2979FF" />
             ) : (
               dataGraficas.map((pregunta, index) => (
-                <View key={index} style={{height: 260}}>
+                <View key={index} style={{height: 320}}>
                   <Text
                     style={{
                       textAlign: 'center',
