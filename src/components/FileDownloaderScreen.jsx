@@ -9,9 +9,11 @@ import {requestExternalStoragePermission} from '../assets/permissions';
 
 export const FileDownloaderScreen = () => {
   const [selectedYear, setSelectedYear] = useState('2023'); // Año seleccionado por defecto
+  const [downloading, setDownloading] = useState(false); // Estado para controlar la descarga
   const handleSaveDataXlSXNumeric = async () => {
     try {
       // const permissions = await requestExternalStoragePermission();
+      setDownloading(true); // Comienza la descarga, desactiva el botón
       const permissions = true;
       if (permissions) {
         const dataCloudFirestore = await handleGetData();
@@ -72,7 +74,7 @@ export const FileDownloaderScreen = () => {
         data => data.dataType === 'written' && data.year == selectedYear,
       );
       const valuesArray = [];
-      console.log(dataSurvey)
+     
       dataSurvey.forEach((data, index) => {
         const values = Object.entries(data.results)
           .sort((a, b) =>columns.indexOf(a[0]) -columns.indexOf(b[0]))
@@ -109,15 +111,17 @@ export const FileDownloaderScreen = () => {
 
       await RNFS.writeFile(filePath, newExcelData, 'base64');
 
-      alert('Archivo descargado correctamente.');
+      Alert.alert('Alerta','Archivo descargado correctamente.');
+      setDownloading(false);
     } catch (error) {
       console.error('Error al guardar datos en Excel DE STRING:', error);
     }
   };
 
   return (
-    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-      <Text>Selecciona el año:</Text>
+      <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+      <Text style={{color: 'black', fontSize: 20, fontWeight:'bold'}}>Descargar encuesta CUSCO</Text>
+      <Text style={{color: 'black', fontSize: 20}}>Selecciona el año:</Text>
       <Picker
         selectedValue={selectedYear}
         style={{height: 50, width: 150}}
@@ -131,7 +135,7 @@ export const FileDownloaderScreen = () => {
         {/* Agregar más años si es necesario */}
       </Picker>
 
-      <Button title="Descargar archivo" onPress={handleSaveDataXlSXNumeric} />
+      <Button title="Descargar archivo"  disabled={downloading}   onPress={handleSaveDataXlSXNumeric} />
     </View>
   );
 };

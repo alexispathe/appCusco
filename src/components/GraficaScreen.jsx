@@ -16,6 +16,7 @@ import RNFS from 'react-native-fs';
 export const GraficaScreen = () => {
   const [dataGraficas, setDataGraficas] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [downloadingGraph, setDownloadingGraph] = useState(false); // Nuevo estado para controlar la descarga de la gráfica
   const ref = useRef(null);
 
   useEffect(() => {
@@ -112,6 +113,7 @@ export const GraficaScreen = () => {
   const handleCapture = async () => {
     try {
       if (!ref.current) return false;
+      setDownloadingGraph(true); // Comienza la descarga de la gráfica, desactiva el botón
       const cacheFilePath = await ref.current.capture(); //hacemos la captura
       const destinationPath = `${RNFS.ExternalDirectoryPath}/archivos/grafica.jpg`;
       await RNFS.mkdir(`${RNFS.ExternalDirectoryPath}/archivos`);
@@ -120,6 +122,7 @@ export const GraficaScreen = () => {
       } else {
         await RNFS.copyFile(cacheFilePath, destinationPath);
         Alert.alert('Alerta', 'Imagen guardada correctamente');
+        setDownloadingGraph(false); // En caso de éxito o error, habilitar nuevamente el botón
       }
     } catch (error) {
       console.error('Error al guardar', error);
@@ -169,8 +172,11 @@ export const GraficaScreen = () => {
           </View>
         </ViewShot>
       </ScrollView>
-
-      <Button title="Descargar graficas" onPress={handleCapture} />
+      {isLoading ? (
+        ''
+      ) : (
+        <Button title="Descargar graficas" onPress={handleCapture}  disabled={downloadingGraph}/>
+      )}
     </>
   );
 };

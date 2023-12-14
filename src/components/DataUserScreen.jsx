@@ -73,7 +73,6 @@ export const DataUserScreen = () => {
               onPress={handleFormSubmit}
               disabled={isButtonDisabled}
             />
-            <FileDownloaderScreen/>
           </View>
         ) : (
           <QuestionnaireScreen
