@@ -3,19 +3,19 @@ import {
   View,
   Text,
   Button,
-  StyleSheet,
   ScrollView,
   ActivityIndicator,
+  Alert,
 } from 'react-native';
 import {QuestionnaireStyles as styles, PickerStyles} from '../styles/styles';
-import {RadioButton, TextInput as PaperTextInput} from 'react-native-paper';
 import {requestExternalStoragePermission} from '../assets/permissions';
-import {preguntasCusco as questions} from '../database/preguntasCuscoDB';
-import { QuestionComponent } from './QuestionComponent';
+import {prueba as questions} from '../database/preguntasCuscoDB';
+import {QuestionComponent} from './QuestionComponent';
 import {
-  handleSaveDataStorage,
   handleSaveCloudFirestore,
+  handleSaveLocalData,
 } from '../assets/questionnaireFunctions';
+import NetInfo from '@react-native-community/netinfo'; //Verificar si hay internet
 import {Picker} from '@react-native-picker/picker';
 export const QuestionnaireScreen = ({
   setMeterNumber,
@@ -43,18 +43,35 @@ export const QuestionnaireScreen = ({
   }, [selectedOptions]);
 
   const permissions = async () => {
-    handleSaveCloudFirestore(
-      selectedYear,
-      setMeterNumber,
-      meterNumber,
-      questionnaireNumber,
-      setStatus,
-      questions,
-      selectedOptions,
-      setSelectedOptions,
-      setUserResponses,
-    );
-    setIsButtonDisabled(true)
+    const netInfoState = await NetInfo.fetch();
+    if (!netInfoState.isConnected) {
+      // Si no hay conexión, muestra una alerta al usuario
+      
+      handleSaveLocalData(
+        selectedYear,
+        setMeterNumber,
+        meterNumber,
+        questionnaireNumber,
+        setStatus,
+        questions,
+        selectedOptions,
+        setSelectedOptions,
+        setUserResponses,
+      );
+    } else {
+      handleSaveCloudFirestore(
+        selectedYear,
+        setMeterNumber,
+        meterNumber,
+        questionnaireNumber,
+        setStatus,
+        questions,
+        selectedOptions,
+        setSelectedOptions,
+        setUserResponses,
+      );
+      setIsButtonDisabled(true);
+    }
   };
   const handleOptionSelect = (questionID, index) => {
     setSelectedOptions({
@@ -63,8 +80,6 @@ export const QuestionnaireScreen = ({
     });
     console.log(selectedOptions);
   };
- 
-
 
   const checkAllOptionsSelected = () => {
     const allQuestionsAnswered = questions.every(section =>
@@ -93,10 +108,10 @@ export const QuestionnaireScreen = ({
               onValueChange={itemValue => setSelectedYear(itemValue)}>
               <Picker.Item label="2023" value="2023" />
               <Picker.Item label="2024" value="2024" />
-              <Picker.Item label="2024" value="2025" />
-              <Picker.Item label="2024" value="2026" />
-              <Picker.Item label="2024" value="2027" />
-              <Picker.Item label="2024" value="2028" />
+              <Picker.Item label="2025" value="2025" />
+              <Picker.Item label="2026" value="2026" />
+              <Picker.Item label="2027" value="2027" />
+              <Picker.Item label="2028" value="2028" />
             </Picker>
           </View>
           {visibleQuestions.map((section, sectionIndex) => (
@@ -125,4 +140,3 @@ export const QuestionnaireScreen = ({
     </ScrollView>
   );
 };
-

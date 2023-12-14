@@ -1,6 +1,5 @@
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { columns } from '../database/preguntasCuscoDB';
 // Importar firebase
 import { appFirebase } from '../auth/credentials';
 import { getFirestore, collection, addDoc, getDoc, doc, deleteDoc, getDocs, setDoc } from 'firebase/firestore'
@@ -97,43 +96,78 @@ export const handleSaveCloudFirestore = async (selectedYear,setMeterNumber, mete
         Alert.alert("Error", 'Error al guardar los datos:', error);
     }
 };
-export const handleSaveDataStorage = async (setMeterNumber, meterNumber, questionnaireNumber, setStatus, questions, selectedOptions, setSelectedOptions, setUserResponses) => {
-    const userData = {};
-    questions.forEach(section => {
-        section.questions.forEach(question => {
-            const { questionID, questionType } = question;
-            if (selectedOptions[questionID] !== undefined) {
-                // Verifica el tipo de pregunta y guarda el valor adecuado
-                if (questionType === 'numberInput') {
-                    userData[questionID] = parseInt(selectedOptions[questionID]) + 1;
-                } else if (questionType === 'radioButton') {
-                    userData[questionID] = selectedOptions[questionID] + 1;
-                }
-            }
-        });
-    });
 
-    const newUserData = {
-        results: userData,
-        meterNumber,
-        questionnaireNumber,
-    };
-
+export const handleSaveLocalData = async (selectedYear,setMeterNumber, meterNumber, questionnaireNumber, setStatus, questions, selectedOptions, setSelectedOptions, setUserResponses) => {
     try {
-        const existingData = await AsyncStorage.getItem('userResult');
-        if (existingData !== null) {
-            const parsedExistingData = JSON.parse(existingData);
-            const updatedData = [...parsedExistingData, newUserData];
-            await AsyncStorage.setItem('userResult', JSON.stringify(updatedData));
-            setUserResponses(newUserData);
-            await handleSaveDataXlSX(setMeterNumber, questionnaireNumber, questions, selectedOptions, setSelectedOptions, setStatus)
-        } else {
-            await AsyncStorage.setItem('userResult', JSON.stringify([newUserData]));
-            setUserResponses(newUserData);
-        }
+        const surveyID = generateID();
+        const userData = {};
+        questions.forEach(section => {
+            section.questions.forEach(question => {
+                const { questionID, questionType } = question;
+                if (selectedOptions[questionID] !== undefined) {
+                    if (questionType === 'numberInput') {
+                        userData[questionID] = parseInt(selectedOptions[questionID]);
+                    } else if (questionType === 'radioButton') {
+                        userData[questionID] = selectedOptions[questionID] + 1;
+                    }
+                }
+            });
+        });
+
+        const newUserData = {
+            year: selectedYear,
+            surveyID,
+            dataType: 'numeric',
+            results: userData,
+            meterNumber,
+            questionnaireNumber,
+        };
+
+        const userResponseText = {}
+        questions.forEach(section => {
+            section.questions.forEach(question => {
+                const { questionID, questionType, options } = question;
+                if (selectedOptions[questionID] !== undefined) {
+                    let value2 = question.options[selectedOptions[questionID]];
+                    if (questionType === 'numberInput') {
+                        userResponseText[questionID] = parseInt(selectedOptions[questionID]);
+                    } else if (questionType === 'radioButton') {
+                        userResponseText[questionID] = value2;
+                    }
+                }
+            });
+        });
+        const userDataText = {
+            year: selectedYear,
+            surveyID,
+            dataType: 'written',
+            questionnaireNumber,
+            meterNumber,
+            results: userResponseText
+        };
+
+        let existingData = await AsyncStorage.getItem('localData');
+        existingData = existingData ? JSON.parse(existingData) : [];
+        
+        // Remover datos previamente guardados con el mismo surveyID
+        existingData = existingData.filter(item => item.surveyID !== surveyID);
+
+        // Agregar los nuevos datos al array
+        existingData.push(newUserData);
+        existingData.push(userDataText);
+
+        // Guardar los datos en AsyncStorage
+        await AsyncStorage.setItem('localData', JSON.stringify(existingData));
+
+        console.log("Datos localmente", await AsyncStorage.getItem('localData'))     
+        await Alert.alert(
+            'Sin conexión',
+            'No hay conexión a internet. Datos guardados localmente',
+          );
+        setSelectedOptions({});
+        setStatus(false);
     } catch (error) {
-        console.error('Error al guardar los datos:', error);
+        Alert.alert('Error', 'Error al guardar los datos localmente: ' + error);
     }
 };
-
 
