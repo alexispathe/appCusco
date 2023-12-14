@@ -159,7 +159,6 @@ export const handleSaveLocalData = async (selectedYear,setMeterNumber, meterNumb
         // Guardar los datos en AsyncStorage
         await AsyncStorage.setItem('localData', JSON.stringify(existingData));
 
-        console.log("Datos localmente", await AsyncStorage.getItem('localData'))     
         await Alert.alert(
             'Sin conexión',
             'No hay conexión a internet. Datos guardados localmente',
@@ -171,3 +170,21 @@ export const handleSaveLocalData = async (selectedYear,setMeterNumber, meterNumb
     }
 };
 
+
+export const uploadLocalDataToFirestore = async data => {
+    try {
+      data.forEach(async item => {
+        await addDoc(collection(db, 'resultadosEncuesta'),item);
+      });
+    } catch (error) {
+      throw new Error('Error al subir los datos a Firestore');
+    }
+  };
+  
+  export const clearLocalData = async () => {
+    try {
+      await AsyncStorage.removeItem('localData');
+    } catch (error) {
+      throw new Error('Error al limpiar el almacenamiento local');
+    }
+  };
