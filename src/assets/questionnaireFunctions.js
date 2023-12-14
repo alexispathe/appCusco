@@ -161,7 +161,7 @@ export const handleSaveLocalData = async (selectedYear,setMeterNumber, meterNumb
 
         await Alert.alert(
             'Sin conexión',
-            'No hay conexión a internet. Datos guardados localmente',
+            'Datos guardados localmente',
           );
         setSelectedOptions({});
         setStatus(false);
