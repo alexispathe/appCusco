@@ -41,7 +41,7 @@ export const GraficaScreen = () => {
         for (const pregunta of preguntasAProcesar) {
           if (pregunta.questionType === 'numberInput') {
             const respuestasPregunta = {};
-            const intervalos = [0, 10, 20, 30, 40];
+            const intervalos = [0, 10, 20, 30, 40,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,210,220];
 
             respuestas.forEach(respuesta => {
               const valorRespuesta = respuesta[pregunta.questionID];
