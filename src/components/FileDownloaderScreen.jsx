@@ -6,64 +6,70 @@ import RNFS from 'react-native-fs';
 import {handleGetData} from '../assets/questionnaireFunctions';
 import {columns} from '../database/preguntasCuscoDB';
 import {requestExternalStoragePermission} from '../assets/permissions';
+import NetInfo from '@react-native-community/netinfo';
 
 export const FileDownloaderScreen = () => {
   const [selectedYear, setSelectedYear] = useState('2023'); // Año seleccionado por defecto
   const [downloading, setDownloading] = useState(false); // Estado para controlar la descarga
   const handleSaveDataXlSXNumeric = async () => {
     try {
-      // const permissions = await requestExternalStoragePermission();
-      setDownloading(true); // Comienza la descarga, desactiva el botón
-      const permissions = true;
-      if (permissions) {
-        const dataCloudFirestore = await handleGetData();
-        const dataSurvey = dataCloudFirestore.filter(
-          data => data.dataType === 'numeric' && data.year === selectedYear,
-        );
-        const valuesArray = [];
-        dataSurvey.forEach((data, index) => {
-          const values = Object.entries(data.results)
-            .sort((a, b) =>columns.indexOf(a[0]) -columns.indexOf(b[0]))
-            .map(entry => entry[1]);
-        
-          values.unshift(index + 1);
-          valuesArray.push(values);
-        });
-        const filePath = `${RNFS.ExternalDirectoryPath}/archivos/cusco_numeric_${selectedYear}.xlsx`;
-        await RNFS.mkdir(`${RNFS.ExternalDirectoryPath}/archivos`);
-        let workbook = null;
-        if (await RNFS.exists(filePath)) {
-          await RNFS.unlink(filePath); // Elimina el archivo existente
-        }
-        workbook = XLSX.utils.book_new();
+      const netInfo = await NetInfo.fetch();
+      if (!netInfo.isConnected){
+        Alert.alert('Sin conexión', 'Revise la conexión a interner');
 
-        let sheetName = 'Datos';
-        let worksheet = workbook.Sheets[sheetName];
-
-        if (!worksheet) {
-          worksheet = XLSX.utils.aoa_to_sheet([columns]);
-          XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
-        }
-
-        XLSX.utils.sheet_add_aoa(worksheet, valuesArray, {
-          header: [],
-          skipHeader: true,
-          origin: -1,
-        });
-
-        const newExcelData = XLSX.write(workbook, {
-          bookType: 'xlsx',
-          type: 'base64',
-        });
-
-        await RNFS.writeFile(filePath, newExcelData, 'base64');
-
-        handleSaveDataXlSXString();
-      }else{
-        Alert.alert('Permisos denegados', 'Permite a la aplicación acceder a tus archivos')
       }
+      else{
+        // const permissions = await requestExternalStoragePermission();
+        setDownloading(true); // Comienza la descarga, desactiva el botón
+        const permissions = true;
+        if (permissions) {
+          const dataCloudFirestore = await handleGetData();
+          const dataSurvey = dataCloudFirestore.filter(
+            data => data.dataType === 'numeric' && data.year === selectedYear,
+          );
+          const valuesArray = [];
+          dataSurvey.forEach((data, index) => {
+            const values = Object.entries(data.results)
+              .sort((a, b) => columns.indexOf(a[0]) - columns.indexOf(b[0]))
+              .map(entry => entry[1]);
+
+            values.unshift(index + 1);
+            valuesArray.push(values);
+          });
+          const filePath = `${RNFS.ExternalDirectoryPath}/archivos/cusco_numeric_${selectedYear}.xlsx`;
+          await RNFS.mkdir(`${RNFS.ExternalDirectoryPath}/archivos`);
+          let workbook = null;
+          if (await RNFS.exists(filePath)) {
+            await RNFS.unlink(filePath); // Elimina el archivo existente
+          }
+          workbook = XLSX.utils.book_new();
+
+          let sheetName = 'Datos';
+          let worksheet = workbook.Sheets[sheetName];
+
+          if (!worksheet) {
+            worksheet = XLSX.utils.aoa_to_sheet([columns]);
+            XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
+          }
+
+          XLSX.utils.sheet_add_aoa(worksheet, valuesArray, {
+            header: [],
+            skipHeader: true,
+            origin: -1,
+          });
+
+          const newExcelData = XLSX.write(workbook, {
+            bookType: 'xlsx',
+            type: 'base64',
+          });
+
+          await RNFS.writeFile(filePath, newExcelData, 'base64');
+
+          handleSaveDataXlSXString();
+        }
+      } 
     } catch (error) {
-      console.error('Error al guardar datos en Excel:', error);
+      Alert.alert('Error al guardar datos en Excel:', error);
     }
   };
 
@@ -74,11 +80,11 @@ export const FileDownloaderScreen = () => {
         data => data.dataType === 'written' && data.year == selectedYear,
       );
       const valuesArray = [];
-     
+
       dataSurvey.forEach((data, index) => {
         const values = Object.entries(data.results)
-          .sort((a, b) =>columns.indexOf(a[0]) -columns.indexOf(b[0]))
-          .map((entry) => entry[1]);
+          .sort((a, b) => columns.indexOf(a[0]) - columns.indexOf(b[0]))
+          .map(entry => entry[1]);
         values.unshift(index + 1); // Se agrega +1 para que el índice comience en 1 en lugar de 0
         valuesArray.push(values);
       });
@@ -111,16 +117,18 @@ export const FileDownloaderScreen = () => {
 
       await RNFS.writeFile(filePath, newExcelData, 'base64');
 
-      Alert.alert('Alerta','Archivo descargado correctamente.');
+      Alert.alert('Aviso', 'Archivo descargado correctamente.');
       setDownloading(false);
     } catch (error) {
-      console.error('Error al guardar datos en Excel DE STRING:', error);
+      Alert.alert('Error al guardar datos en Excel DE STRING:', error);
     }
   };
 
   return (
-      <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-      <Text style={{color: 'black', fontSize: 20, fontWeight:'bold'}}>Descargar encuesta CUSCO</Text>
+    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+      <Text style={{color: 'black', fontSize: 20, fontWeight: 'bold'}}>
+        Descargar encuesta CUSCO
+      </Text>
       <Text style={{color: 'black', fontSize: 20}}>Selecciona el año:</Text>
       <Picker
         selectedValue={selectedYear}
@@ -135,7 +143,11 @@ export const FileDownloaderScreen = () => {
         {/* Agregar más años si es necesario */}
       </Picker>
 
-      <Button title="Descargar archivo"  disabled={downloading}   onPress={handleSaveDataXlSXNumeric} />
+      <Button
+        title="Descargar archivo"
+        disabled={downloading}
+        onPress={handleSaveDataXlSXNumeric}
+      />
     </View>
   );
 };
