@@ -11,24 +11,37 @@ import {preguntasCusco as preguntas} from '../database/preguntasCuscoDB';
 import ViewShot from 'react-native-view-shot';
 import RNFS from 'react-native-fs';
 import {GraficaComponent} from './GraficaComponent';
+import NetInfo from '@react-native-community/netinfo'
+import { useNavigation } from '@react-navigation/native';
+
 export const GraficaScreen = () => {
   const [dataGraficas, setDataGraficas] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [downloadingGraph, setDownloadingGraph] = useState(false); // Nuevo estado para controlar la descarga de la gráfica
   const ref = useRef(null);
+  const navigation = useNavigation();
 
   useEffect(() => {
-    getData();
+   
+      getData();
+    
   }, []);
   
   const getData = async () => {
-    setIsLoading(true);
-    const dataCloudFirestore = await handleGetData();
-    const dataSurvey = dataCloudFirestore.filter(
-      data => data.dataType === 'written',
-    );
-    const datos = dataSurvey.map(data => data.results);
-    procesarRespuestas(datos);
+    const netInfo = await NetInfo.fetch();
+    if(!netInfo.isConnected){
+      await Alert.alert('Sin conexión', 'Revise la conexión a interner');
+      navigation.navigate('Home');
+    }else{
+      setIsLoading(true);
+      const dataCloudFirestore = await handleGetData();
+      const dataSurvey = dataCloudFirestore.filter(
+        data => data.dataType === 'written',
+      );
+      const datos = dataSurvey.map(data => data.results);
+      procesarRespuestas(datos);
+    }
+   
   };
 
   const procesarRespuestas = async respuestas => {

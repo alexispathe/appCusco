@@ -2,7 +2,6 @@
 import React from 'react';
 import { View, Text, ScrollView, Dimensions } from 'react-native';
 import { BarChart } from 'react-native-chart-kit';
-
 export const GraficaComponent = ({ pregunta, generarDatosGrafica }) => {
   return (
     <View style={{ marginBottom: 20 }}>
