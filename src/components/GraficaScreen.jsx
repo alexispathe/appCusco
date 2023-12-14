@@ -2,17 +2,15 @@ import {useEffect, useState, useRef} from 'react';
 import {
   ScrollView,
   View,
-  Text,
   ActivityIndicator,
-  Dimensions,
   Alert,
   Button,
 } from 'react-native';
-import {BarChart} from 'react-native-chart-kit';
 import {handleGetData} from '../assets/questionnaireFunctions';
 import {preguntasCusco as preguntas} from '../database/preguntasCuscoDB';
 import ViewShot from 'react-native-view-shot';
 import RNFS from 'react-native-fs';
+import {GraficaComponent} from './GraficaComponent';
 export const GraficaScreen = () => {
   const [dataGraficas, setDataGraficas] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -22,7 +20,7 @@ export const GraficaScreen = () => {
   useEffect(() => {
     getData();
   }, []);
-
+  
   const getData = async () => {
     setIsLoading(true);
     const dataCloudFirestore = await handleGetData();
@@ -41,7 +39,10 @@ export const GraficaScreen = () => {
         for (const pregunta of preguntasAProcesar) {
           if (pregunta.questionType === 'numberInput') {
             const respuestasPregunta = {};
-            const intervalos = [0, 10, 20, 30, 40,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,210,220];
+            const intervalos = [
+              0, 10, 20, 30, 40, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150,
+              160, 170, 180, 190, 200, 210, 220,
+            ];
 
             respuestas.forEach(respuesta => {
               const valorRespuesta = respuesta[pregunta.questionID];
@@ -135,41 +136,22 @@ export const GraficaScreen = () => {
         <ViewShot
           ref={ref}
           options={{fileName: 'graficas', format: 'jpg', quality: 0.9}}>
+
+
           <View style={{flex: 1, backgroundColor: 'white'}}>
             {isLoading ? (
               <ActivityIndicator size="large" color="#2979FF" />
             ) : (
               dataGraficas.map((pregunta, index) => (
-                <View key={index} style={{height: 320}}>
-                  <Text
-                    style={{
-                      textAlign: 'center',
-                      color: 'black',
-                      fontWeight: 'bold',
-                      padding: 10,
-                    }}>
-                    {pregunta.pregunta}
-                  </Text>
-                  <BarChart
-                    data={generarDatosGrafica(index)}
-                    width={Dimensions.get('window').width}
-                    height={220}
-                    yAxisLabel=""
-                    chartConfig={{
-                      backgroundGradientFrom: '#ffffff',
-                      backgroundGradientTo: '#ffffff',
-                      decimalPlaces: 0,
-                      color: (opacity = 1) => `rgba(41, 121, 255, ${opacity})`,
-                      labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                      style: {
-                        borderRadius: 16,
-                      },
-                    }}
-                  />
-                </View>
+                <GraficaComponent
+                  key={index}
+                  pregunta={pregunta}
+                  generarDatosGrafica={() => generarDatosGrafica(index)}
+                />
               ))
             )}
           </View>
+
         </ViewShot>
       </ScrollView>
       {isLoading ? (
