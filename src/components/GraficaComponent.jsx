@@ -16,11 +16,6 @@ export const GraficaComponent = ({ pregunta, generarDatosGrafica }) => {
       >
         {pregunta.pregunta}
       </Text>
-      <ScrollView
-        horizontal
-        contentContainerStyle={{ alignItems: 'center' }}
-        showsHorizontalScrollIndicator={false}
-      >
         <BarChart
           data={generarDatosGrafica()}
           width={Dimensions.get('window').width}
@@ -40,7 +35,6 @@ export const GraficaComponent = ({ pregunta, generarDatosGrafica }) => {
             marginLeft: -16, // Ajuste para que la primera barra no esté cortada
           }}
         />
-      </ScrollView>
     </View>
   );
 };

@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -11,6 +11,7 @@ import {QuestionnaireStyles as styles, PickerStyles} from '../styles/styles';
 import {RadioButton, TextInput as PaperTextInput} from 'react-native-paper';
 import {requestExternalStoragePermission} from '../assets/permissions';
 import {preguntasCusco as questions} from '../database/preguntasCuscoDB';
+import { QuestionComponent } from './QuestionComponent';
 import {
   handleSaveDataStorage,
   handleSaveCloudFirestore,
@@ -27,7 +28,6 @@ export const QuestionnaireScreen = ({
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const [userResponses, setUserResponses] = useState(null);
   const [loading, setLoading] = useState(false);
-  const scrollViewRef = useRef(null);
   const [visibleQuestions, setVisibleQuestions] = useState([]);
   const [startIndex, setStartIndex] = useState(0);
   const [selectedYear, setSelectedYear] = useState('2023'); // Año seleccionado por defecto
@@ -54,13 +54,14 @@ export const QuestionnaireScreen = ({
       setSelectedOptions,
       setUserResponses,
     );
+    setIsButtonDisabled(true)
   };
   const handleOptionSelect = (questionID, index) => {
     setSelectedOptions({
       ...selectedOptions,
       [questionID]: index,
     });
-    // console.log(selectedOptions);
+    console.log(selectedOptions);
   };
  
 
@@ -73,42 +74,8 @@ export const QuestionnaireScreen = ({
     );
     setIsButtonDisabled(!allQuestionsAnswered);
   };
-
-  const handleScroll = ({nativeEvent}) => {
-    const {layoutMeasurement, contentOffset, contentSize} = nativeEvent;
-    const paddingToBottom = 20;
-
-    if (
-      layoutMeasurement.height + contentOffset.y >=
-        contentSize.height - paddingToBottom &&
-      !loading // Agregar una verificación para evitar la carga mientras ya está cargando
-    ) {
-      setLoading(true);
-      alert('Scrroll');
-      // Calcula la nueva página de preguntas a cargar
-      const newStartIndex = startIndex + pageSize;
-      const additionalQuestions = questions.slice(
-        newStartIndex,
-        newStartIndex + pageSize,
-      );
-
-      // Simula un retraso para mostrar la lógica de carga
-      setTimeout(() => {
-        setVisibleQuestions(prevQuestions =>
-          prevQuestions.concat(additionalQuestions),
-        );
-        setStartIndex(newStartIndex);
-        setLoading(false);
-      }, 1000); // Simula una carga, podrías ajustar este tiempo según tus necesidades
-    }
-  };
-
   return (
-    <ScrollView
-      ref={scrollViewRef}
-      contentContainerStyle={styles.scrollViewContainer}
-      onScroll={({nativeEvent}) => handleScroll({nativeEvent})}
-      scrollEventThrottle={400}>
+    <ScrollView contentContainerStyle={styles.scrollViewContainer}>
       {loadingStatus ? (
         <View style={styles.loadingContainer}>
           <Text>Cargando preguntas....</Text>
@@ -116,77 +83,30 @@ export const QuestionnaireScreen = ({
         </View>
       ) : (
         <>
-         <View style={PickerStyles.container}>
-                <View style={PickerStyles.pickerContainer}>
-                  <Text style={PickerStyles.label}>
-                    Selecciona el año de la encuesta:
-                  </Text>
-                  <Picker
-                    selectedValue={selectedYear}
-                    style={PickerStyles.picker}
-                    onValueChange={itemValue => setSelectedYear(itemValue)}>
-                    <Picker.Item label="2023" value="2023" />
-                    <Picker.Item label="2024" value="2024" />
-                    <Picker.Item label="2025" value="2025" />
-                    <Picker.Item label="2026" value="2026" />
-                    <Picker.Item label="2027" value="2027" />
-                    <Picker.Item label="2028" value="2028" />
-                    {/* Agregar más años si es necesario */}
-                  </Picker>
-                </View>
-              </View>
+          <View style={PickerStyles.container}>
+            <Text style={PickerStyles.label}>
+              Selecciona el año de la encuesta:
+            </Text>
+            <Picker
+              selectedValue={selectedYear}
+              style={PickerStyles.picker}
+              onValueChange={itemValue => setSelectedYear(itemValue)}>
+              <Picker.Item label="2023" value="2023" />
+              <Picker.Item label="2024" value="2024" />
+              <Picker.Item label="2024" value="2025" />
+              <Picker.Item label="2024" value="2026" />
+              <Picker.Item label="2024" value="2027" />
+              <Picker.Item label="2024" value="2028" />
+            </Picker>
+          </View>
           {visibleQuestions.map((section, sectionIndex) => (
             <View key={sectionIndex} style={PickerStyles.sectionContainer}>
-              {/* Contenedor del picker */}
-             
-              {/* Fin del contenedor Picker */}
-              <Text style={styles.sectionTitle}>{section.title}</Text>
-              {section.questions.map((question, questionIndex) => (
-                <View
-                  key={question.questionID}
-                  style={styles.questionContainer}>
-                  <Text style={styles.questionTitle}>
-                    {question.id} {question.title}
-                  </Text>
-                  {question.questionType === 'numberInput' ? (
-                    <PaperTextInput
-                      label={question.title}
-                      value={selectedOptions[question.questionID]}
-                      onChangeText={text =>
-                        handleOptionSelect(question.questionID, text)
-                      }
-                      keyboardType="numeric"
-                      style={styles.input}
-                    />
-                  ) : (
-                    <ScrollView contentContainerStyle={styles.optionsContainer}>
-                      {question.options.map((option, optionIndex) => (
-                        <View
-                          key={optionIndex}
-                          style={styles.radioButtonContainer}>
-                          <RadioButton.Android
-                            value={optionIndex}
-                            status={
-                              selectedOptions[question.questionID] ===
-                              optionIndex
-                                ? 'checked'
-                                : 'unchecked'
-                            }
-                            onPress={() =>
-                              handleOptionSelect(
-                                question.questionID,
-                                optionIndex,
-                              )
-                            }
-                            color="#6200EE"
-                          />
-                          <Text style={styles.optionText}>{option}</Text>
-                        </View>
-                      ))}
-                    </ScrollView>
-                  )}
-                </View>
-              ))}
+              <QuestionComponent
+                section={section}
+                selectedOptions={selectedOptions}
+                handleOptionSelect={handleOptionSelect}
+                styles={styles}
+              />
             </View>
           ))}
         </>
@@ -202,7 +122,7 @@ export const QuestionnaireScreen = ({
         onPress={permissions}
         disabled={isButtonDisabled}
       />
-      {/* <Button title="Descargar Excel" onPress={requestExternalStoragePermission} /> */}
     </ScrollView>
   );
 };
+
