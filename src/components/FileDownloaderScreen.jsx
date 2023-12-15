@@ -7,7 +7,8 @@ import {handleGetData} from '../assets/questionnaireFunctions';
 import {columns} from '../database/preguntasCuscoDB';
 import {requestExternalStoragePermission} from '../assets/permissions';
 import NetInfo from '@react-native-community/netinfo';
-
+import { OpenExcelFile } from './OpenExcelFile';
+import Share from 'react-native-share';
 export const FileDownloaderScreen = () => {
   const [selectedYear, setSelectedYear] = useState('2023'); // Año seleccionado por defecto
   const [downloading, setDownloading] = useState(false); // Estado para controlar la descarga
@@ -118,12 +119,31 @@ export const FileDownloaderScreen = () => {
       await RNFS.writeFile(filePath, newExcelData, 'base64');
 
       Alert.alert('Aviso', 'Archivo descargado correctamente.');
+      
       setDownloading(false);
+      await handleOpenExcelFile()
     } catch (error) {
       Alert.alert('Error al guardar datos en Excel DE STRING:', error);
     }
   };
+  const handleOpenExcelFile = async () => {
+    const filePath = `${RNFS.ExternalDirectoryPath}/archivos/cusco_string_${selectedYear}.xlsx`;
 
+    try {
+      const fileExists = await RNFS.exists(filePath);
+      if (fileExists) {
+        const options = {
+          title: 'Abrir con...',
+          url: `file://${filePath}`,
+        };
+        await Share.open(options);
+      } else {
+        Alert.alert('Archivo no encontrado', 'El archivo no existe en la ruta especificada.');
+      }
+    } catch (error) {
+      // Alert.alert('Error al abrir el archivo', error.message);
+    }
+  };
   return (
     <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
       <Text style={{color: 'black', fontSize: 20, fontWeight: 'bold'}}>
@@ -144,7 +164,7 @@ export const FileDownloaderScreen = () => {
       </Picker>
 
       <Button
-        title="Descargar archivo"
+        title="Descargar y abrir archivo"
         disabled={downloading}
         onPress={handleSaveDataXlSXNumeric}
       />
