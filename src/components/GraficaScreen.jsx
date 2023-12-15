@@ -13,7 +13,8 @@ import RNFS from 'react-native-fs';
 import {GraficaComponent} from './GraficaComponent';
 import NetInfo from '@react-native-community/netinfo'
 import { useNavigation } from '@react-navigation/native';
-
+import FileViewer from 'react-native-file-viewer';
+import Share from 'react-native-share';
 export const GraficaScreen = () => {
   const [dataGraficas, setDataGraficas] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -137,12 +138,33 @@ export const GraficaScreen = () => {
         await RNFS.copyFile(cacheFilePath, destinationPath);
         Alert.alert('Alerta', 'Imagen guardada correctamente');
         setDownloadingGraph(false); // En caso de éxito o error, habilitar nuevamente el botón
+        openFile()
       }
     } catch (error) {
       console.error('Error al guardar', error);
     }
   };
+  const openFile= async()=>{
+    const filePath = `${RNFS.ExternalDirectoryPath}/archivos/grafica.jpg`;
 
+    try {
+      const fileExists = await RNFS.exists(filePath);
+      if (fileExists) {
+        FileViewer.open(filePath, { showOpenWithDialog: true })
+          .then(() => {
+            // El archivo se ha abierto correctamente
+          })
+          .catch(error => {
+            console.log(error.toString())
+            Alert.alert('Error al abrir el archivo', error.toString());
+          });
+      } else {
+        Alert.alert('Archivo no encontrado', 'El archivo no existe en la ruta especificada.');
+      }
+    } catch (error) {
+      Alert.alert('Error al abrir el archivo', error.message);
+    }
+  }
   return (
     <>
       <ScrollView style={{flex: 1}}>

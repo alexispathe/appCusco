@@ -7,8 +7,8 @@ import {handleGetData} from '../assets/questionnaireFunctions';
 import {columns} from '../database/preguntasCuscoDB';
 import {requestExternalStoragePermission} from '../assets/permissions';
 import NetInfo from '@react-native-community/netinfo';
-import { OpenExcelFile } from './OpenExcelFile';
 import Share from 'react-native-share';
+import FileViewer from 'react-native-file-viewer';
 export const FileDownloaderScreen = () => {
   const [selectedYear, setSelectedYear] = useState('2023'); // Año seleccionado por defecto
   const [downloading, setDownloading] = useState(false); // Estado para controlar la descarga
@@ -132,16 +132,19 @@ export const FileDownloaderScreen = () => {
     try {
       const fileExists = await RNFS.exists(filePath);
       if (fileExists) {
-        const options = {
-          title: 'Abrir con...',
-          url: `file://${filePath}`,
-        };
-        await Share.open(options);
+        FileViewer.open(filePath, { showOpenWithDialog: true })
+          .then(() => {
+            // El archivo se ha abierto correctamente
+          })
+          .catch(error => {
+            console.log(error.toString())
+            Alert.alert('Error al abrir el archivo', error.toString());
+          });
       } else {
         Alert.alert('Archivo no encontrado', 'El archivo no existe en la ruta especificada.');
       }
     } catch (error) {
-      // Alert.alert('Error al abrir el archivo', error.message);
+      Alert.alert('Error al abrir el archivo', error.message);
     }
   };
   return (
