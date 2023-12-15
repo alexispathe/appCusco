@@ -14,7 +14,6 @@ import {GraficaComponent} from './GraficaComponent';
 import NetInfo from '@react-native-community/netinfo'
 import { useNavigation } from '@react-navigation/native';
 import FileViewer from 'react-native-file-viewer';
-import Share from 'react-native-share';
 export const GraficaScreen = () => {
   const [dataGraficas, setDataGraficas] = useState([]);
   const [isLoading, setIsLoading] = useState(true);

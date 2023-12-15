@@ -7,7 +7,6 @@ import {handleGetData} from '../assets/questionnaireFunctions';
 import {columns} from '../database/preguntasCuscoDB';
 import {requestExternalStoragePermission} from '../assets/permissions';
 import NetInfo from '@react-native-community/netinfo';
-import Share from 'react-native-share';
 import FileViewer from 'react-native-file-viewer';
 export const FileDownloaderScreen = () => {
   const [selectedYear, setSelectedYear] = useState('2023'); // Año seleccionado por defecto

@@ -1,7 +1,6 @@
 import React from 'react';
 import { View, Text, Button, Alert } from 'react-native';
 import  RNFS  from 'react-native-fs';
-import Share from 'react-native-share';
 
 export const OpenExcelFile = () => {
   const selectedYear = '2023'; // Aquí deberías obtener el año seleccionado
