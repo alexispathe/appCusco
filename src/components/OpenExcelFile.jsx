@@ -3,7 +3,7 @@ import { View, Text, Button, Alert } from 'react-native';
 import  RNFS  from 'react-native-fs';
 
 export const OpenExcelFile = () => {
-  const selectedYear = '2023'; // Aquí deberías obtener el año seleccionado
+  const selectedYear = '2024'; // Aquí deberías obtener el año seleccionado
 
   const handleOpenExcelFile = async () => {
     const filePath = `${RNFS.ExternalDirectoryPath}/archivos/cusco_string_${selectedYear}.xlsx`;

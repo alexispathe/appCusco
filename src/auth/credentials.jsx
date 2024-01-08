@@ -5,12 +5,12 @@ import { initializeApp } from "firebase/app";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyD2FOpZRQbaZru0Gi-9EHLLfdmZzCzzfLo",
-  authDomain: "crudcusco.firebaseapp.com",
-  projectId: "crudcusco",
-  storageBucket: "crudcusco.appspot.com",
-  messagingSenderId: "962248397236",
-  appId: "1:962248397236:web:4d857ec89a395a906b62e1"
+  apiKey: "AIzaSyAu_unZjQiDL6heNhgNl8StPX6L7M_lDH0",
+  authDomain: "aplicacioncusco.firebaseapp.com",
+  projectId: "aplicacioncusco",
+  storageBucket: "aplicacioncusco.appspot.com",
+  messagingSenderId: "873097979989",
+  appId: "1:873097979989:web:27c956c398f9ede8024cdc"
 };
 
 // Initialize Firebase

@@ -9,7 +9,7 @@ import {requestExternalStoragePermission} from '../assets/permissions';
 import NetInfo from '@react-native-community/netinfo';
 import FileViewer from 'react-native-file-viewer';
 export const FileDownloaderScreen = () => {
-  const [selectedYear, setSelectedYear] = useState('2023'); // Año seleccionado por defecto
+  const [selectedYear, setSelectedYear] = useState('2024'); // Año seleccionado por defecto
   const [downloading, setDownloading] = useState(false); // Estado para controlar la descarga
   const handleSaveDataXlSXNumeric = async () => {
     try {
@@ -156,7 +156,6 @@ export const FileDownloaderScreen = () => {
         selectedValue={selectedYear}
         style={{height: 50, width: 150}}
         onValueChange={itemValue => setSelectedYear(itemValue)}>
-        <Picker.Item label="2023" value="2023" />
         <Picker.Item label="2024" value="2024" />
         <Picker.Item label="2025" value="2025" />
         <Picker.Item label="2026" value="2026" />

@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import {QuestionnaireStyles as styles, PickerStyles} from '../styles/styles';
 import {requestExternalStoragePermission} from '../assets/permissions';
-import {prueba as questions} from '../database/preguntasCuscoDB';
+import {preguntasCusco as questions} from '../database/preguntasCuscoDB';
 import {QuestionComponent} from './QuestionComponent';
 import {
   handleSaveCloudFirestore,
@@ -30,7 +30,7 @@ export const QuestionnaireScreen = ({
   const [loading, setLoading] = useState(false);
   const [visibleQuestions, setVisibleQuestions] = useState([]);
   const [startIndex, setStartIndex] = useState(0);
-  const [selectedYear, setSelectedYear] = useState('2023'); // Año seleccionado por defecto
+  const [selectedYear, setSelectedYear] = useState('2024'); // Año seleccionado por defecto
   const pageSize = 10;
 
   useEffect(() => {
@@ -106,7 +106,6 @@ export const QuestionnaireScreen = ({
               selectedValue={selectedYear}
               style={PickerStyles.picker}
               onValueChange={itemValue => setSelectedYear(itemValue)}>
-              <Picker.Item label="2023" value="2023" />
               <Picker.Item label="2024" value="2024" />
               <Picker.Item label="2025" value="2025" />
               <Picker.Item label="2026" value="2026" />
