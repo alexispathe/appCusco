@@ -1,9 +1,11 @@
 import {useNavigation} from '@react-navigation/native';
 import {Button, StyleSheet, TouchableOpacity, Text, View} from 'react-native';
+import { Image } from 'react-native';
 export const Home = () => {
   const navigation = useNavigation();
   return (
     <View style={styles.container}>
+      <Image style={styles.imagen} source={require('../assets/images/logo.jpeg')} />
       <TouchableOpacity
         activeOpacity={0.9}
         style={styles.btn}
@@ -33,10 +35,16 @@ export const Home = () => {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor:'black'
+  },
   btn: {
     width: '100%',
     height: 60,
-    backgroundColor: '#0184EB',
+    backgroundColor: '#CCA400',
     justifyContent: 'center',
     marginTop: 1,
   },
@@ -45,5 +53,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     textAlign: 'center',
+  },
+  imagen: {
+    width: 350,
+    height: 350,
+    resizeMode: 'cover', // Puedes ajustar esto según tus necesidades
   },
 });
