@@ -1,38 +1,33 @@
-import {useEffect, useState, useRef} from 'react';
-import {
-  ScrollView,
-  View,
-  ActivityIndicator,
-  Alert,
-  Button,
-} from 'react-native';
-import {handleGetData} from '../assets/questionnaireFunctions';
-import {preguntasCusco as preguntas} from '../database/preguntasCuscoDB';
+// En este componente se renderizan las graficas
+import { useEffect, useState, useRef } from 'react';
+import { ScrollView, View, ActivityIndicator, Alert, Button } from 'react-native';
+import { handleGetData } from '../assets/questionnaireFunctions';
+import { preguntasCusco as preguntas } from '../database/preguntasCuscoDB';
 import ViewShot from 'react-native-view-shot';
 import RNFS from 'react-native-fs';
-import {GraficaComponent} from './GraficaComponent';
-import NetInfo from '@react-native-community/netinfo'
+import { GraficaComponent } from './GraficaComponent';
+import NetInfo from '@react-native-community/netinfo';
 import { useNavigation } from '@react-navigation/native';
 import FileViewer from 'react-native-file-viewer';
+
 export const GraficaScreen = () => {
   const [dataGraficas, setDataGraficas] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [downloadingGraph, setDownloadingGraph] = useState(false); // Nuevo estado para controlar la descarga de la gráfica
+  const [downloadingGraph, setDownloadingGraph] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const ref = useRef(null);
   const navigation = useNavigation();
 
   useEffect(() => {
-   
-      getData();
-    
+    getData();
   }, []);
-  
+
   const getData = async () => {
     const netInfo = await NetInfo.fetch();
-    if(!netInfo.isConnected){
-      await Alert.alert('Sin conexión', 'Revise la conexión a interner');
+    if (!netInfo.isConnected) {
+      await Alert.alert('Sin conexión', 'Revise la conexión a internet');
       navigation.navigate('Home');
-    }else{
+    } else {
       setIsLoading(true);
       const dataCloudFirestore = await handleGetData();
       const dataSurvey = dataCloudFirestore.filter(
@@ -41,10 +36,10 @@ export const GraficaScreen = () => {
       const datos = dataSurvey.map(data => data.results);
       procesarRespuestas(datos);
     }
-   
   };
 
   const procesarRespuestas = async respuestas => {
+    const chunkedData = [];
     if (respuestas && respuestas.length >= 1) {
       const dataProcesada = [];
       for (let i = 0; i < preguntas.length; i++) {
@@ -102,13 +97,21 @@ export const GraficaScreen = () => {
         }
       }
 
-      setDataGraficas(dataProcesada);
+      for (let i = 0; i < dataProcesada.length; i += 10) {
+        chunkedData.push(dataProcesada.slice(i, i + 10));
+      }
+
+      setDataGraficas(chunkedData);
       setIsLoading(false);
     }
   };
 
+  const handleNext = () => {
+    setCurrentIndex(prevIndex => prevIndex + 1);
+  };
+
   const generarDatosGrafica = indicePregunta => {
-    const pregunta = dataGraficas[indicePregunta];
+    const pregunta = dataGraficas[currentIndex][indicePregunta];
     const respuestas = pregunta.respuestas;
     const labels = Object.keys(respuestas).map(respuesta => respuesta);
     const valores = Object.values(respuestas);
@@ -124,11 +127,12 @@ export const GraficaScreen = () => {
       ],
     };
   };
+
   const handleCapture = async () => {
     try {
       if (!ref.current) return false;
-      setDownloadingGraph(true); // Comienza la descarga de la gráfica, desactiva el botón
-      const cacheFilePath = await ref.current.capture(); //hacemos la captura
+      setDownloadingGraph(true);
+      const cacheFilePath = await ref.current.capture();
       const destinationPath = `${RNFS.ExternalDirectoryPath}/archivos/grafica.jpg`;
       await RNFS.mkdir(`${RNFS.ExternalDirectoryPath}/archivos`);
       if (await RNFS.exists(destinationPath)) {
@@ -136,14 +140,18 @@ export const GraficaScreen = () => {
       } else {
         await RNFS.copyFile(cacheFilePath, destinationPath);
         Alert.alert('Alerta', 'Imagen guardada correctamente');
-        setDownloadingGraph(false); // En caso de éxito o error, habilitar nuevamente el botón
-        openFile()
+        setDownloadingGraph(false);
+        openFile();
       }
     } catch (error) {
       console.error('Error al guardar', error);
     }
   };
-  const openFile= async()=>{
+  const handlePrevious = () => {
+    setCurrentIndex(prevIndex => prevIndex - 1);
+  };
+
+  const openFile = async () => {
     const filePath = `${RNFS.ExternalDirectoryPath}/archivos/grafica.jpg`;
 
     try {
@@ -154,29 +162,32 @@ export const GraficaScreen = () => {
             // El archivo se ha abierto correctamente
           })
           .catch(error => {
-            console.log(error.toString())
+            console.log(error.toString());
             Alert.alert('Error al abrir el archivo', error.toString());
           });
       } else {
-        Alert.alert('Archivo no encontrado', 'El archivo no existe en la ruta especificada.');
+        Alert.alert(
+          'Archivo no encontrado',
+          'El archivo no existe en la ruta especificada.',
+        );
       }
     } catch (error) {
       Alert.alert('Error al abrir el archivo', error.message);
     }
-  }
+  };
   return (
     <>
-      <ScrollView style={{flex: 1}}>
+      <ScrollView style={{ flex: 1 }}>
         <ViewShot
           ref={ref}
-          options={{fileName: 'graficas', format: 'jpg', quality: 0.9}}>
-
-
-          <View style={{flex: 1, backgroundColor: 'white'}}>
+          options={{ fileName: 'graficas', format: 'jpg', quality: 0.9 }}
+        >
+          <View style={{ flex: 1, backgroundColor: 'white' }}>
             {isLoading ? (
               <ActivityIndicator size="large" color="#2979FF" />
             ) : (
-              dataGraficas.map((pregunta, index) => (
+              dataGraficas[currentIndex] &&
+              dataGraficas[currentIndex].map((pregunta, index) => (
                 <GraficaComponent
                   key={index}
                   pregunta={pregunta}
@@ -185,14 +196,29 @@ export const GraficaScreen = () => {
               ))
             )}
           </View>
-
         </ViewShot>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+          <Button
+            title="Anterior"
+            onPress={handlePrevious}
+            disabled={currentIndex === 0}
+          />
+          <Button
+            title="Siguiente"
+            onPress={handleNext}
+            disabled={currentIndex === dataGraficas.length - 1}
+          />
+        </View>
       </ScrollView>
       {isLoading ? (
         ''
       ) : (
-        <Button title="Descargar graficas" onPress={handleCapture}  disabled={downloadingGraph}/>
+        <Button
+          title="Descargar gráficas"
+          onPress={handleCapture}
+          disabled={downloadingGraph}
+        />
       )}
     </>
   );
-};
+  };
