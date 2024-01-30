@@ -197,7 +197,12 @@ export const GraficaScreen = () => {
             )}
           </View>
         </ViewShot>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+        
+      </ScrollView>
+      {isLoading ? (
+        ''
+      ) : (
+        <View style={{ flexDirection: 'row', justifyContent: 'space-around', backgroundColor: 'white' }}>
           <Button
             title="Anterior"
             onPress={handlePrevious}
@@ -209,15 +214,6 @@ export const GraficaScreen = () => {
             disabled={currentIndex === dataGraficas.length - 1}
           />
         </View>
-      </ScrollView>
-      {isLoading ? (
-        ''
-      ) : (
-        <Button
-          title="Descargar gráficas"
-          onPress={handleCapture}
-          disabled={downloadingGraph}
-        />
       )}
     </>
   );
