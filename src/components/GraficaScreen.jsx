@@ -17,7 +17,7 @@ export const GraficaScreen = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const ref = useRef(null);
   const navigation = useNavigation();
-
+  
   useEffect(() => {
     getData();
   }, []);
@@ -97,8 +97,8 @@ export const GraficaScreen = () => {
         }
       }
 
-      for (let i = 0; i < dataProcesada.length; i += 10) {
-        chunkedData.push(dataProcesada.slice(i, i + 10));
+      for (let i = 0; i < dataProcesada.length; i += 10  ) {
+        chunkedData.push(dataProcesada.slice(i, i + 10  ));
       }
 
       setDataGraficas(chunkedData);

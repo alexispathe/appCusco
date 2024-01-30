@@ -3,6 +3,12 @@ import React from 'react';
 import { View, Text, ScrollView, Dimensions } from 'react-native';
 import { BarChart } from 'react-native-chart-kit';
 export const GraficaComponent = ({ pregunta, generarDatosGrafica }) => {
+  const screenWidth = Dimensions.get('window').width;
+  const additionalWidthPerAnswer = 200; // Ancho adicional por cada respuesta
+
+  const numAnswers = Object.keys(pregunta.respuestas).length; // Obtener la cantidad de respuestas
+  const chartWidth = screenWidth + (additionalWidthPerAnswer * (numAnswers - 2)); // Ajustar el ancho de la gráfica según la cantidad de respuestas
+
   return (
     <View style={{ marginBottom: 20 }}>
       <Text
@@ -15,9 +21,10 @@ export const GraficaComponent = ({ pregunta, generarDatosGrafica }) => {
       >
         {pregunta.pregunta}
       </Text>
+      <ScrollView horizontal>
         <BarChart
           data={generarDatosGrafica()}
-          width={Dimensions.get('window').width}
+          width={chartWidth}
           height={220}
           yAxisLabel=""
           chartConfig={{
@@ -34,7 +41,7 @@ export const GraficaComponent = ({ pregunta, generarDatosGrafica }) => {
             marginLeft: -16, // Ajuste para que la primera barra no esté cortada
           }}
         />
+      </ScrollView>
     </View>
   );
 };
-
