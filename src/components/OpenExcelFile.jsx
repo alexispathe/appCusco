@@ -1,3 +1,4 @@
+// Componente que sirve para abrir el archivo de excel
 import React from 'react';
 import { View, Text, Button, Alert } from 'react-native';
 import  RNFS  from 'react-native-fs';

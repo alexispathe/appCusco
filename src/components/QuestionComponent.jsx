@@ -1,4 +1,4 @@
-// QuestionComponent.js
+// Componente que sirve para renderizar cada una de las preguntas que se encuentran en la base de datos
 import React from 'react';
 import { View, Text, ScrollView } from 'react-native';
 import { RadioButton, TextInput as PaperTextInput } from 'react-native-paper';

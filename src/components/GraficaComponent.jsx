@@ -1,4 +1,4 @@
-// GraficaComponent.js
+// Este componente funciona para renderizar cada una de las preguntas para cada grafica
 import React from 'react';
 import { View, Text, ScrollView, Dimensions } from 'react-native';
 import { BarChart } from 'react-native-chart-kit';

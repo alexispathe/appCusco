@@ -1,3 +1,4 @@
+// Componente principal
 import {useNavigation} from '@react-navigation/native';
 import {Button, StyleSheet, TouchableOpacity, Text, View} from 'react-native';
 import {Image} from 'react-native';

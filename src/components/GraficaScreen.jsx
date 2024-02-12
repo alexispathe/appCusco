@@ -1,4 +1,5 @@
-// En este componente se renderizan las graficas
+// Componente principal para visualizar las graficas
+// Dentro de este componente se encuentra GraficaComponent que sirve para renderizar cada grafica conforme a la pregunta
 import { useEffect, useState, useRef } from 'react';
 import { ScrollView, View, ActivityIndicator, Alert, Button } from 'react-native';
 import { handleGetData } from '../assets/questionnaireFunctions';

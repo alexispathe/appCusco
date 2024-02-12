@@ -1,3 +1,6 @@
+// Este compnente sirve para visualizar las preguntas
+// Lo mandamos a llamar desde el compnente "DataUserScreen"
+// Las preguntas que se renderizan se llaman desde el componente "QuestionComponent"
 import React, {useState, useEffect} from 'react';
 import {
   View,
@@ -9,7 +12,7 @@ import {
 } from 'react-native';
 import {QuestionnaireStyles as styles, PickerStyles} from '../styles/styles';
 import {requestExternalStoragePermission} from '../assets/permissions';
-import {preguntasCusco as questions} from '../database/preguntasCuscoDB';
+import {prueba as questions} from '../database/preguntasCuscoDB';
 import {QuestionComponent} from './QuestionComponent';
 import {
   handleSaveCloudFirestore,

@@ -1,3 +1,4 @@
+// Componente que sirve para subir los datos almacenados localemente al Firestore
 import React, {useState, useEffect} from 'react';
 import {View, Button, Alert, Text, StyleSheet} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';

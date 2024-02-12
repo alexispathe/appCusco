@@ -1,6 +1,4 @@
 import {PermissionsAndroid} from 'react-native';
-
-
 // Permisos para acceder a los archivos del celular
 export const requestExternalStoragePermission = async () => {
     try {

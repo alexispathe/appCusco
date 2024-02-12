@@ -1,3 +1,4 @@
+// Trabajamos con la navegacion de pantallas dentro de nuestra app
 import { GraficaScreen } from "../components/GraficaScreen";
 import { DataUserScreen } from "../components/DataUserScreen";
 import { FileDownloaderScreen } from "../components/FileDownloaderScreen";

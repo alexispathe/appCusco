@@ -1,3 +1,6 @@
+// Este archivo sirve como base de datos donde se encuentras las preguntas y sus respuestas
+
+// 'preguntasCusco' son las preguntas originales para la encuesta
 export const preguntasCusco = [
   {
     title: 'Características Sociodemográficas',
@@ -794,6 +797,7 @@ export const preguntasCusco = [
     questionCuscoID: 5,
   },
 ];
+// 'prueba' son las preguntas de prueba para comprobar el renderizado y guardado de las preguntas en la firestore
 
 export const prueba = [
   {
@@ -956,6 +960,7 @@ export const prueba = [
   },
 ];
 
+// 'columns' dentro de este arreglo se encuentras las columnas que tendra nuestro archivo excel una ves generado
 export const columns = [
   'ID',
   'Edad',

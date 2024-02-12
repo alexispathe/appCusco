@@ -1,4 +1,5 @@
-
+// Componente principal de la seccion "Realizar encuesta"
+// Dentro de este componente se encuentra otro llamado "QuestionnaireScreen" para visualizar las preguntas
 import React, { useState, useEffect } from 'react';
 import { View, Text, Button,  ScrollView, } from 'react-native';
 import { DataUserStyles as styles } from '../styles/styles';

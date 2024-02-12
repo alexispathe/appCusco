@@ -1,3 +1,5 @@
+// Credenciales para autenticarnos con el servidor de firebase
+
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 // TODO: Add SDKs for Firebase products that you want to use
@@ -5,13 +7,12 @@ import { initializeApp } from "firebase/app";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyAu_unZjQiDL6heNhgNl8StPX6L7M_lDH0",
-  authDomain: "aplicacioncusco.firebaseapp.com",
-  projectId: "aplicacioncusco",
-  storageBucket: "aplicacioncusco.appspot.com",
-  messagingSenderId: "873097979989",
-  appId: "1:873097979989:web:27c956c398f9ede8024cdc"
+  apiKey: "AIzaSyAiYaenSQtbe8ehaGfl00Dn3JSPmqReTxg",
+  authDomain: "appcusco-77b11.firebaseapp.com",
+  projectId: "appcusco-77b11",
+  storageBucket: "appcusco-77b11.appspot.com",
+  messagingSenderId: "597154056703",
+  appId: "1:597154056703:web:ae8a617a93080ff83effca"
 };
-
 // Initialize Firebase
 export const appFirebase = initializeApp(firebaseConfig);

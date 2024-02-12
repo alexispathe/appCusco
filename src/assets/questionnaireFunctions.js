@@ -1,4 +1,4 @@
-
+// En este archivo se encuentras todas las funciones para hacer peticiones al servidor de firebase
 import AsyncStorage from '@react-native-async-storage/async-storage';
 // Importar firebase
 import { appFirebase } from '../auth/credentials';
